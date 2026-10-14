@@ -72,31 +72,34 @@ Acesse no navegador: **`http://127.0.0.1:5000/`** ou o relatório em **`http://1
 ```powershell
 python -m unittest discover -s tests -v
 ```
-*40 testes automatizados cobrindo cálculos, segurança OWASP ASVS, validadores, concorrência e endpoints.*
+*49 testes automatizados cobrindo cálculos, RBAC, força bruta, scanner LGPD, hot backup com integridade, segurança OWASP ASVS, validadores, concorrência e endpoints.*
 
 ---
 
-## 🐳 Execução via Docker / Docker Compose
+## 🔒 Implantação Segura, Proxy Reverso e Isolamento da Porta 5000
 
-Para executar em qualquer servidor Linux ou VPS:
-```bash
-docker-compose up -d
-```
-Acesse `http://localhost:5000/healthz` para checar a saúde do container.
+Por diretriz estrita de segurança e conformidade municipal:
+* **NUNCA exponha a porta 5000 diretamente à Internet.** O servidor Flask/Gunicorn escuta exclusivamente em `127.0.0.1:5000` (loopback interno).
+* O tráfego externo deve ser intermediado obrigatoriamente por proxy reverso seguro HTTPS com terminação TLS 1.3/1.2:
+  * [Configuração Nginx com Rate Limiting](deploy/nginx/nginx.conf)
+  * [Configuração Caddyfile com TLS Automático](deploy/caddy/Caddyfile)
+  * [Unidades Systemd Hardened e Agendador](deploy/systemd/siaps-monitor.service)
 
 ---
 
-## 📚 Documentação Técnica e Normativa
+## 📚 Documentação Técnica, Normativa e Operacional
 
-- [**Escopo e Regras do Produto**](docs/escopo.md): Delimitação territorial, usuários e fontes permitidas.
-- [**Critérios de Aceitação**](docs/criterios_aceitacao.md): Comportamento esperado para todas as funcionalidades e falhas.
+- [**Termo de Homologação e Aceite Municipal**](docs/termo_aceite_municipal.md): Instrumento formal da Secretaria Municipal de Saúde de Pacujá/CE.
+- [**Guia de Implantação e Rollback**](docs/implantacao_rollback.md): Passo a passo de deploy seguro e reversão em menos de 3 minutos.
+- [**Relatório de Teste de Carga e Benchmark**](docs/teste_carga.md): Métricas de throughput (> 220 req/s), latências p50/p95 e concorrência.
+- [**Acessibilidade e Compatibilidade de Navegadores**](docs/acessibilidade_navegadores.md): Auditoria WCAG 2.2 AA e leitores de tela (NVDA, VoiceOver, TalkBack).
+- [**Governança de Privacidade e LGPD**](docs/privacidade_lgpd.md): Conformidade com as normas da ANPD, scanner e rotina de expurgo.
 - [**Metodologia Oficial NT 8/2026**](docs/metodologia.md): Fórmulas, pesos, conceitos e faixas oficiais.
+- [**Segurança e Controles OWASP ASVS**](docs/seguranca_asvs.md): Mapeamento contra ameaças cibernéticas e RBAC.
 - [**Arquitetura do Sistema**](docs/arquitetura.md): Separação de camadas e fluxo de dados.
-- [**Segurança e Controles OWASP ASVS**](docs/seguranca_asvs.md): Mapeamento contra ameaças cibernéticas.
-- [**Governança de Privacidade e LGPD**](docs/privacidade_lgpd.md): Conformidade com as normas da ANPD.
+- [**Critérios de Aceitação**](docs/criterios_aceitacao.md): Comportamento esperado para todas as funcionalidades e falhas.
 - [**Manual do Usuário**](docs/manual_usuario.md): Guia prático de interpretação dos indicadores.
 - [**Operação, Backup e Recuperação**](docs/operacao_backup.md): Monitoramento contínuo e plano de desastre.
-- [**Guia de Implantação e Ambientes**](docs/implantacao.md): Checklist pré-deploy e rollback.
 - [**Changelog de Versões**](docs/changelog.md): Histórico SemVer de lançamentos.
 
 ---

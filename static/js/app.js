@@ -81,6 +81,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnSync.addEventListener('click', triggerSync);
 
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+      btnLogout.addEventListener('click', async () => {
+        try {
+          await fetch('/api/auth/logout', { method: 'POST' });
+          showToast('Sessão encerrada com sucesso.', 'info');
+          setTimeout(() => window.location.reload(), 400);
+        } catch (e) {
+          window.location.reload();
+        }
+      });
+    }
+
     // Chart toggles
     document.querySelectorAll('.toggle-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {

@@ -4,13 +4,23 @@ import hashlib
 import json
 import os
 from datetime import datetime, timezone
+from functools import wraps
 from pathlib import Path
-from flask import Flask, abort, jsonify, render_template, request, send_file
+from flask import Flask, abort, g, jsonify, redirect, render_template, request, send_file, url_for
 
+from siaps.auth import (
+    AuthError,
+    SESSION_COOKIE_NAME,
+    authenticate_user,
+    destroy_session,
+    ensure_initial_users,
+    get_current_user_from_request,
+    log_audit,
+)
 from siaps.calculations import METODOLOGIA_INFO, INDICADORES_PESOS
 from siaps.ingestion import sync_siaps_data
 from siaps.models import init_db, get_connection
-from siaps.security import apply_security_headers, require_admin_if_configured
+from siaps.security import apply_security_headers
 from siaps.services import (
     create_improvement_action,
     delete_improvement_action,
@@ -34,6 +44,50 @@ ROOT = Path(__file__).resolve().parent
 RAW_DATA = ROOT / "data" / "raw"
 DB_PATH = ROOT / "data" / "siaps_monitor.db"
 APP_VERSION = "1.0.0"
+
+
+def require_role_or_configured_key(*allowed_roles: str):
+    """
+    Controlador de autorização proporcional e RBAC:
+    1. Se o usuário estiver autenticado (cookie ou Bearer session token), valida seu papel (RBAC).
+    2. Se SIAPS_REQUIRE_AUTH estiver ativo, exige login obrigatório.
+    3. Se SIAPS_ADMIN_KEY estiver definida, valida a chave correspondente.
+    4. Caso contrário, permite operação na rede local/ambiente de testes.
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            auth_enforced = os.environ.get("SIAPS_REQUIRE_AUTH", "").lower() in {"1", "true", "yes"}
+            user = getattr(g, "current_user", None)
+
+            if user:
+                if user["role"] not in allowed_roles and user["role"] != "admin":
+                    log_audit(
+                        getattr(g, "db_path", None),
+                        "access_denied",
+                        request.path,
+                        f"Papel '{user['role']}' sem permissão para esta rota",
+                        user_id=user["id"],
+                        username=user["username"],
+                        status="forbidden",
+                    )
+                    return jsonify(error="Acesso negado.", message="Seu perfil de acesso não possui permissão para esta ação."), 403
+                return f(*args, **kwargs)
+
+            if auth_enforced:
+                return jsonify(error="Autenticação obrigatória.", message="Efetue login institucional para continuar."), 401
+
+            admin_key = os.environ.get("SIAPS_ADMIN_KEY")
+            if admin_key:
+                header_key = request.headers.get("X-Admin-Key")
+                auth_header = request.headers.get("Authorization", "")
+                bearer_key = auth_header.replace("Bearer ", "").strip() if auth_header.startswith("Bearer ") else ""
+                if header_key != admin_key and bearer_key != admin_key:
+                    return jsonify(error="Acesso não autorizado.", message="Forneça a chave administrativa ou efetue login."), 401
+
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -71,9 +125,10 @@ def create_app(test_config: dict | None = None) -> Flask:
     if test_config:
         app.config.update(test_config)
 
-    # Garante inicialização do esquema do banco de dados
+    # Garante inicialização do esquema do banco de dados e perfis institucionais
     target_db = Path(app.config["DB_PATH"])
     init_db(target_db)
+    ensure_initial_users(target_db)
 
     # Auto-seed: em ambiente novo com banco vazio, carrega os dados oficiais automaticamente
     if not test_config:
@@ -86,6 +141,15 @@ def create_app(test_config: dict | None = None) -> Flask:
         except Exception:
             pass
 
+    @app.before_request
+    def setup_context():
+        g.db_path = Path(app.config["DB_PATH"])
+        g.current_user = get_current_user_from_request(g.db_path)
+
+    @app.context_processor
+    def inject_auth_state():
+        return {"current_user": getattr(g, "current_user", None)}
+
     @app.after_request
     def security_headers(response):
         return apply_security_headers(response)
@@ -97,6 +161,73 @@ def create_app(test_config: dict | None = None) -> Flask:
     @app.get("/")
     def index():
         return render_template("index.html")
+
+    @app.get("/login")
+    def login_view():
+        if getattr(g, "current_user", None):
+            return redirect(url_for("index"))
+        return render_template("login.html")
+
+    @app.post("/api/auth/login")
+    def api_login():
+        data = request.get_json(silent=True) or {}
+        username = str(data.get("username", "")).strip()
+        password = str(data.get("password", ""))
+
+        if not username or not password:
+            return jsonify(error="Usuário e senha são obrigatórios."), 400
+
+        ip_addr = request.headers.get("X-Forwarded-For", request.remote_addr)
+        ua = request.headers.get("User-Agent", "")
+
+        try:
+            auth_res = authenticate_user(
+                username=username,
+                password=password,
+                ip_address=ip_addr,
+                user_agent=ua,
+                db_path=Path(app.config["DB_PATH"]),
+            )
+        except AuthError as err:
+            return jsonify(error=str(err)), 401
+
+        resp = jsonify(
+            status="authenticated",
+            user=auth_res["user"],
+            token=auth_res["session_token"],
+            expires_at=auth_res["expires_at"],
+        )
+        is_secure = request.is_secure or (request.headers.get("X-Forwarded-Proto") == "https")
+        resp.set_cookie(
+            SESSION_COOKIE_NAME,
+            auth_res["session_token"],
+            httponly=True,
+            secure=is_secure,
+            samesite="Lax",
+            max_age=8 * 3600,
+        )
+        return resp, 200
+
+    @app.post("/api/auth/logout")
+    def api_logout():
+        token = request.cookies.get(SESSION_COOKIE_NAME)
+        if not token:
+            auth_header = request.headers.get("Authorization", "")
+            if auth_header.startswith("Bearer "):
+                token = auth_header[7:].strip()
+        if token:
+            destroy_session(token, db_path=Path(app.config["DB_PATH"]))
+
+        resp = jsonify(status="logged_out")
+        resp.delete_cookie(SESSION_COOKIE_NAME)
+        return resp, 200
+
+    @app.get("/api/auth/me")
+    def api_me():
+        user = getattr(g, "current_user", None)
+        if not user:
+            return jsonify(authenticated=False, user=None), 200
+        return jsonify(authenticated=True, user=user), 200
 
     @app.get("/healthz")
     def healthz():
@@ -173,12 +304,11 @@ def create_app(test_config: dict | None = None) -> Flask:
         )
 
     @app.post("/api/sync")
-    @require_admin_if_configured
+    @require_role_or_configured_key("admin", "coordenador_aps")
     def sync():
         raw_dir = Path(app.config["RAW_DATA_DIR"])
         db_path = Path(app.config["DB_PATH"])
         trigger = request.json.get("trigger", "manual") if request.is_json else "manual"
-        # Limita trigger string a valor seguro
         trigger_clean = str(trigger)[:30]
         result = sync_siaps_data(db_path=db_path, raw_dir=raw_dir, trigger_type=trigger_clean)
 
@@ -199,7 +329,7 @@ def create_app(test_config: dict | None = None) -> Flask:
         return jsonify(actions=items)
 
     @app.post("/api/actions")
-    @require_admin_if_configured
+    @require_role_or_configured_key("admin", "coordenador_aps", "equipe_saude")
     def create_action():
         db_path = Path(app.config["DB_PATH"])
         data = request.get_json(force=True) or {}
@@ -208,7 +338,7 @@ def create_app(test_config: dict | None = None) -> Flask:
         return jsonify(res), 201
 
     @app.put("/api/actions/<int:action_id>")
-    @require_admin_if_configured
+    @require_role_or_configured_key("admin", "coordenador_aps", "equipe_saude")
     def update_action(action_id: int):
         db_path = Path(app.config["DB_PATH"])
         data = request.get_json(force=True) or {}
@@ -219,7 +349,7 @@ def create_app(test_config: dict | None = None) -> Flask:
         return jsonify(status="updated")
 
     @app.delete("/api/actions/<int:action_id>")
-    @require_admin_if_configured
+    @require_role_or_configured_key("admin", "coordenador_aps")
     def delete_action(action_id: int):
         db_path = Path(app.config["DB_PATH"])
         success = delete_improvement_action(action_id, db_path=db_path)
@@ -302,7 +432,7 @@ def create_app(test_config: dict | None = None) -> Flask:
         return jsonify(get_monthly_tracking_status(db_path=db_path))
 
     @app.post("/api/sync/monthly")
-    @require_admin_if_configured
+    @require_role_or_configured_key("admin", "coordenador_aps")
     def sync_monthly():
         """Dispara verificação da rotina mensal de atualização dos dados públicos do Siaps."""
         raw_dir = Path(app.config["RAW_DATA_DIR"])
@@ -320,4 +450,5 @@ app = create_app()
 
 
 if __name__ == "__main__":
+    # NUNCA exponha diretamente à Internet (host='127.0.0.1' estritamente isolado por trás de proxy reverso)
     app.run(host="127.0.0.1", port=5000, debug=True)

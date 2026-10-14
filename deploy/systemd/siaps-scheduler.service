@@ -1,0 +1,19 @@
+[Unit]
+Description=Monitor APS Pacuja - Daemon de Agendamento Independente
+After=network.target
+
+[Service]
+Type=simple
+User=siaps
+Group=siaps
+WorkingDirectory=/opt/siaps-pacuja-monitor
+EnvironmentFile=/opt/siaps-pacuja-monitor/.env
+ExecStart=/opt/siaps-pacuja-monitor/.venv/bin/python scripts/scheduler_daemon.py
+Restart=always
+RestartSec=10s
+
+ProtectSystem=full
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

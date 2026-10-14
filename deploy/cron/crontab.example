@@ -1,0 +1,11 @@
+# Crontab do Servidor Linux para o Monitor APS Pacuja
+# Edite com: crontab -e -u siaps
+
+# 1. Rotina Mensal Oficial do Siaps: Todo dia 5 as 06:00 UTC (03:00 Brasilia)
+0 6 5 * * /opt/siaps-pacuja-monitor/.venv/bin/python /opt/siaps-pacuja-monitor/scripts/monthly_update.py >> /var/log/siaps/monthly_cron.log 2>&1
+
+# 2. Backup Externo Diario com Rotacao: Todos os dias as 03:00 UTC (00:00 Brasilia)
+0 3 * * * /opt/siaps-pacuja-monitor/.venv/bin/python /opt/siaps-pacuja-monitor/scripts/backup_external.py --dest /mnt/backup_externo/siaps >> /var/log/siaps/backup_cron.log 2>&1
+
+# 3. Limpeza de sessoes expiradas no banco: Todos os dias as 04:00 UTC
+0 4 * * * /opt/siaps-pacuja-monitor/.venv/bin/python -c "import sqlite3; conn = sqlite3.connect('/opt/siaps-pacuja-monitor/data/siaps_monitor.db'); conn.execute('DELETE FROM user_sessions WHERE expires_at < datetime(\"now\")'); conn.commit(); conn.close()" >> /dev/null 2>&1

@@ -15,9 +15,16 @@ def get_db_path(root_dir: Path | None = None) -> Path:
 def get_connection(db_path: Path | None = None) -> sqlite3.Connection:
     if db_path is None:
         db_path = get_db_path()
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
     conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys = ON")
+    # Habilita WAL mode e busy_timeout para permitir leituras e escritas concorrentes em banco compartilhado
+    try:
+        conn.execute("PRAGMA journal_mode = WAL")
+        conn.execute("PRAGMA synchronous = NORMAL")
+        conn.execute("PRAGMA busy_timeout = 5000")
+        conn.execute("PRAGMA foreign_keys = ON")
+    except sqlite3.OperationalError:
+        pass
     return conn
 
 
@@ -26,6 +33,7 @@ def init_db(db_path: Path | None = None) -> None:
     with conn:
         conn.executescript(
             """
+            -- Tabelas do Domínio Siaps
             CREATE TABLE IF NOT EXISTS raw_files (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 filename TEXT UNIQUE NOT NULL,
@@ -127,6 +135,46 @@ def init_db(db_path: Path | None = None) -> None:
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             );
+
+            -- Tabelas de Autenticação, Autorização e Auditoria (RBAC)
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                full_name TEXT NOT NULL,
+                email TEXT,
+                role TEXT NOT NULL CHECK(role IN ('admin', 'coordenador_aps', 'equipe_saude', 'leitor')),
+                is_active INTEGER NOT NULL DEFAULT 1,
+                failed_login_attempts INTEGER NOT NULL DEFAULT 0,
+                locked_until TEXT,
+                created_at TEXT NOT NULL,
+                last_login TEXT
+            );
+
+            CREATE TABLE IF NOT EXISTS user_sessions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_token TEXT UNIQUE NOT NULL,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                ip_address TEXT,
+                user_agent TEXT,
+                created_at TEXT NOT NULL,
+                expires_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                username TEXT NOT NULL,
+                action TEXT NOT NULL,
+                resource TEXT,
+                details TEXT,
+                ip_address TEXT,
+                status TEXT NOT NULL DEFAULT 'success',
+                timestamp TEXT NOT NULL
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp DESC);
+            CREATE INDEX IF NOT EXISTS idx_sessions_token ON user_sessions(session_token);
             """
         )
     conn.close()

@@ -1,0 +1,27 @@
+[Unit]
+Description=Monitor APS Pacuja - Servidor Web Gunicorn
+After=network.target
+
+[Service]
+Type=simple
+User=siaps
+Group=siaps
+WorkingDirectory=/opt/siaps-pacuja-monitor
+EnvironmentFile=/opt/siaps-pacuja-monitor/.env
+ExecStart=/opt/siaps-pacuja-monitor/.venv/bin/gunicorn app:app \
+    --bind 127.0.0.1:5000 \
+    --workers 3 \
+    --timeout 120 \
+    --access-logfile /var/log/siaps/access.log \
+    --error-logfile /var/log/siaps/error.log
+Restart=always
+RestartSec=5s
+
+# Restricoes de Seguranca Linux (Hardening)
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

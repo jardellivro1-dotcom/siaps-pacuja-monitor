@@ -90,7 +90,18 @@
           <button class="btn btn-primary btn-sm" id="btn-sync">
             <span class="icon" id="sync-icon">🔄</span> Sincronizar Siaps
           </button>
-          <div class="avatar" title="Coordenação APS Pacujá">APS</div>
+          {% if current_user %}
+          <div class="user-badge" id="user-badge" title="Conectado como {{ current_user.full_name }} ({{ current_user.role }})">
+            <span class="user-badge-role">{{ current_user.role }}</span>
+            <span class="user-badge-name">{{ current_user.username }}</span>
+            <button class="btn-xs" id="btn-logout" title="Encerrar sessão de trabalho">Sair</button>
+          </div>
+          {% else %}
+          <a href="/login" class="btn btn-secondary btn-sm" id="btn-login-link" title="Área Restrita de Gestão Municipal">
+            <span class="icon">🔒</span> Entrar
+          </a>
+          {% endif %}
+          <div class="avatar" title="Secretaria Municipal de Saúde · Pacujá">APS</div>
         </div>
       </header>
 

@@ -41,7 +41,16 @@ Para mitigar o risco de operadores inserirem inadvertidamente identificadores de
 
 ---
 
-## 5. Direitos dos Titulares e Contato com a Gestão
+## 6. Scanner Periódico Automatizado e Rotina de Expurgo
+
+Além da validação em tempo de inserção, o sistema conta com:
+- **Scanner Automatizado Noturno (`siaps/privacy.py`):** Integrado ao daemon agendador (`scripts/scheduler_daemon.py`), varre todas as tabelas de texto livre (`improvement_actions` e `audit_log`) em busca de CPFs, CNS ou telefones que possam ter sido introduzidos acidentalmente.
+- **Rotina de Expurgo Imediato (`purge_privacy_violation`):** Em caso de detecção de dado sensível, substitui instantaneamente o registro por texto de redação padronizado (`[CONTEUDO EXPURGADO POR MOTIVO DE PRIVACIDADE LGPD]`) e gera notificação no log de auditoria.
+- **Relatório de Conformidade:** Disponível programaticamente via `scan_database_for_privacy_violations()`, com ateste de conformidade.
+
+---
+
+## 7. Direitos dos Titulares e Contato com a Gestão
 
 Qualquer dúvida ou solicitação referente ao tratamento de dados administrativos no âmbito do Monitor APS Pacujá pode ser encaminhada à:
 
