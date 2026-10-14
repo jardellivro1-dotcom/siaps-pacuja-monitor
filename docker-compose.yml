@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    container_name: siaps-pacuja-monitor
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SIAPS_SECRET_KEY=dev-container-secret-key-change-in-prod
+      - DATABASE_PATH=/app/data/siaps_monitor.db
+      - RAW_DATA_DIR=/app/data/raw
+    volumes:
+      - data-volume:/app/data
+
+volumes:
+  data-volume:

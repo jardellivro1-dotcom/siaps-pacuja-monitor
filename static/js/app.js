@@ -608,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(`Sincronização concluída! ${data.files_downloaded} novos, ${data.files_unchanged} inalterados.`, 'success');
         await loadStatus();
         await loadDashboard();
+        await loadMonthlyTracking();
       } else {
         showToast(`Falha na sincronização: ${data.message}`, 'error');
       }
@@ -619,6 +620,77 @@ document.addEventListener('DOMContentLoaded', () => {
       btnSync.disabled = false;
     }
   }
+
+  async function loadMonthlyTracking() {
+    try {
+      const res = await fetch('/api/monthly-tracking');
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const elLastSync = document.getElementById('monthly-last-sync');
+      const elLastMsg = document.getElementById('monthly-last-msg');
+      const elNextCheck = document.getElementById('monthly-next-check');
+      const elPeriodsCount = document.getElementById('monthly-periods-count');
+      const tbodySyncs = document.getElementById('tbody-monthly-syncs');
+
+      if (data.last_sync && elLastSync) {
+        elLastSync.textContent = data.last_sync.timestamp ? data.last_sync.timestamp.slice(0, 10) : '—';
+        if (elLastMsg) elLastMsg.textContent = `${data.last_sync.files_checked || 4} arqs verificados`;
+      }
+      if (data.next_scheduled_check && elNextCheck) {
+        elNextCheck.textContent = data.next_scheduled_check.slice(0, 10);
+      }
+      if (data.available_periods && elPeriodsCount) {
+        elPeriodsCount.textContent = `${data.available_periods.length} competências`;
+      }
+
+      if (tbodySyncs && data.recent_syncs) {
+        tbodySyncs.innerHTML = '';
+        data.recent_syncs.forEach(s => {
+          const tr = document.createElement('tr');
+          const isSuccess = s.status === 'success';
+          tr.innerHTML = `
+            <td style="font-family: var(--font-mono); font-size: 12px;">${s.timestamp ? s.timestamp.slice(0, 19).replace('T', ' ') : '—'}</td>
+            <td><span class="badge">${escapeHtml(s.trigger_type || 'automático')}</span></td>
+            <td><span class="badge badge-${isSuccess ? 'excellent' : 'warning'}">${escapeHtml(s.status)}</span></td>
+            <td>${s.files_checked || 0}</td>
+            <td>${s.files_updated || 0} novo(s) / ${s.files_unchanged || 0} sem alteração</td>
+            <td style="font-size: 12px; color: var(--slate-600);">${escapeHtml(s.message || 'Auditoria concluída com sucesso')}</td>
+          `;
+          tbodySyncs.appendChild(tr);
+        });
+      }
+    } catch (e) {
+      console.error('Erro ao carregar status mensal:', e);
+    }
+  }
+
+  const btnSyncMonthly = document.getElementById('btn-sync-monthly');
+  if (btnSyncMonthly) {
+    btnSyncMonthly.addEventListener('click', async () => {
+      btnSyncMonthly.disabled = true;
+      showToast('Disparando verificação mensal do Siaps...', 'info');
+      try {
+        const res = await fetch('/api/sync/monthly', { method: 'POST' });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('Verificação mensal realizada com sucesso!', 'success');
+          await loadMonthlyTracking();
+          await loadStatus();
+          await loadDashboard();
+        } else {
+          showToast(`Aviso na rotina: ${data.message || 'Ocupado'}`, 'warning');
+        }
+      } catch (err) {
+        showToast('Falha na comunicação ao executar rotina mensal.', 'error');
+      } finally {
+        btnSyncMonthly.disabled = false;
+      }
+    });
+  }
+
+  // Carrega rotina mensal na inicialização
+  loadMonthlyTracking();
 
   function showToast(msg, type = 'info') {
     const container = document.getElementById('toast-container');
@@ -637,3 +709,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
 });
+

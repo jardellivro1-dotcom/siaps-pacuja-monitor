@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2141">
+  <title>Relatório Executivo APS Pacujá · {{ report.period or 'Consolidado' }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <style>
+    /* Estilos específicos do Relatório Executivo */
+    .report-page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+    .report-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--slate-200);
+      margin-bottom: 24px;
+    }
+    .report-paper {
+      background: var(--white);
+      padding: 48px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--slate-200);
+    }
+    .report-header {
+      border-bottom: 2px solid var(--navy-800);
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .report-gov-title h1 {
+      font-size: 20px;
+      margin: 0 0 4px;
+      color: var(--navy-900);
+      font-family: var(--font-heading);
+    }
+    .report-gov-title h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-600);
+      margin: 0;
+    }
+    .report-badge-competencia {
+      background: var(--navy-900);
+      color: var(--white);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      text-align: right;
+    }
+    .report-section {
+      margin-bottom: 32px;
+    }
+    .report-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy-800);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--slate-200);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .signatures-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px dashed var(--slate-300);
+    }
+    .signature-block {
+      text-align: center;
+    }
+    .signature-line {
+      border-top: 1px solid var(--slate-700);
+      margin-bottom: 8px;
+      margin-top: 40px;
+    }
+    .signature-title {
+      font-size: 12px;
+      color: var(--slate-600);
+    }
+    .concept-counts-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .concept-count-card {
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      border: 1px solid var(--slate-200);
+    }
+    .concept-count-card strong {
+      display: block;
+      font-size: 20px;
+      font-family: var(--font-mono);
+    }
+    .concept-count-card small {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* Regras de Impressão A4 / PDF */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt;
+      }
+      .report-actions-bar,
+      .skip-link,
+      header,
+      button,
+      nav {
+        display: none !important;
+      }
+      .report-page {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .report-paper {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .report-section {
+        page-break-inside: avoid;
+      }
+      .signatures-grid {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <!-- Skip Link -->
+  <a href="#report-content" class="skip-link">Pular para o conteúdo do relatório</a>
+
+  <div class="report-page">
+    <!-- Barra Superior de Ações (Oculta na Impressão) -->
+    <div class="report-actions-bar" role="toolbar" aria-label="Ações do Relatório">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="/" class="btn btn-secondary btn-sm" id="btn-voltar">
+          ← Voltar ao Painel
+        </a>
+        <div style="font-size: 13px; font-weight: 600; color: var(--slate-600);">
+          Período selecionado:
+        </div>
+        <select id="report-period-select" class="form-select form-select-sm" style="width: 140px;" onchange="window.location.href='/relatorio?period=' + this.value">
+          {% for p in report.available_periods %}
+            <option value="{{ p }}" {% if p == report.period %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="/api/relatorio?period={{ report.period }}" target="_blank" class="btn btn-secondary btn-sm" id="btn-export-json">
+          📥 Exportar JSON
+        </a>
+        <button class="btn btn-primary btn-sm" onclick="window.print()" id="btn-imprimir">
+          🖨️ Imprimir / Salvar em PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Documento Formal do Relatório -->
+    <main class="report-paper" id="report-content" tabindex="-1">
+      <!-- Cabeçalho Oficial -->
+      <header class="report-header">
+        <div>
+          <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.15em; color: var(--teal-600); text-transform: uppercase; margin-bottom: 4px;">
+            ESTADO DO CEARÁ · PREFEITURA MUNICIPAL DE PACUJÁ
+          </div>
+          <div class="report-gov-title">
+            <h1>Secretaria Municipal de Saúde · Coordenação da APS</h1>
+            <h2>Relatório Executivo de Desempenho e Qualidade do Cofinanciamento da Atenção Primária</h2>
+          </div>
+          <div style="margin-top: 8px; font-size: 12px; color: var(--slate-600);">
+            Regulamentação: <strong>Nota Técnica nº 8/2026-DEAPS/SAPS/MS</strong> · IBGE: <strong>230990</strong>
+          </div>
+        </div>
+        <div class="report-badge-competencia">
+          <div>COMPETÊNCIA</div>
+          <div style="font-size: 18px;">{{ report.period or '2026Q1' }}</div>
+          <div style="font-size: 10px; opacity: 0.8; font-weight: 400; margin-top: 2px;">Oficial Siaps</div>
+        </div>
+      </header>
+
+      <!-- 1. Sumário Executivo de Liderança -->
+      <section class="report-section">
+        <h3 class="report-section-title">1. Sumário Executivo de Liderança</h3>
+        <p style="font-size: 13px; color: var(--slate-700); line-height: 1.6; margin-bottom: 20px;">
+          O presente relatório consolida os resultados oficiais obtidos pelas equipes municipais de Atenção Primária à Saúde de Pacujá no <strong>{{ report.period }}</strong>, conforme dados auditados do catálogo público do Siaps/MS. Os valores servem de base para acompanhamento de metas, alocação de recursos e definição do plano de ação contínuo.
+        </p>
+
+        <div class="kpi-grid" style="margin-bottom: 24px;">
+          <div class="kpi-card highlight">
+            <span class="kpi-label">Componente II · Vínculo Territorial</span>
+            <div class="kpi-value text-teal">{{ report.kpis.component_2.label }}</div>
+            <div class="kpi-desc">Cadastro e Acompanhamento das equipes eSF</div>
+          </div>
+          <div class="kpi-card highlight">
+            <span class="kpi-label">Componente III · Qualidade do Cuidado</span>
+            <div class="kpi-value text-blue">{{ report.kpis.component_3.label }}</div>
+            <div class="kpi-desc">Conceito predominante: <strong>{{ report.kpis.component_3.predominant }}</strong></div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Equipes Municipais Avaliadas</span>
+            <div class="kpi-value">{{ report.kpis.teams_count }}</div>
+            <div class="kpi-desc">Saúde da Família, Saúde Bucal e eMulti</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Práticas em Alerta / Atenção</span>
+            <div class="kpi-value text-amber">{{ report.attention_indicators|length }}</div>
+            <div class="kpi-desc">Demanda de intervenção prioritária</div>
+          </div>
+        </div>
+
+        <!-- Distribuição por Conceito -->
+        <div class="concept-counts-grid">
+          <div class="concept-count-card" style="background: var(--teal-50); border-color: var(--teal-100);">
+            <strong style="color: var(--teal-600);">{{ report.counts_by_concept.otimo }}</strong>
+            <small style="color: var(--teal-600);">Conceito Ótimo</small>
+          </div>
+          <div class="concept-count-card" style="background: var(--blue-50); border-color: var(--blue-100);">
+            <strong style="color: var(--blue-600);">{{ report.counts_by_concept.bom }}</strong>
+            <small style="color: var(--blue-600);">Conceito Bom</small>
+          </div>
+          <div class="concept-count-card" style="background: var(--amber-50); border-color: var(--amber-100);">
+            <strong style="color: var(--amber-600);">{{ report.counts_by_concept.suficiente }}</strong>
+            <small style="color: var(--amber-600);">Conceito Suficiente</small>
+          </div>
+          <div class="concept-count-card" style="background: var(--red-50); border-color: var(--red-100);">
+            <strong style="color: var(--red-600);">{{ report.counts_by_concept.regular }}</strong>
+            <small style="color: var(--red-600);">Conceito Regular</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Detalhamento de Indicadores NT 8/2026 -->
+      <section class="report-section">
+        <h3 class="report-section-title">2. Resultados por Indicador da Nota Técnica nº 8/2026</h3>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Cód.</th>
+                <th>Indicador de Qualidade</th>
+                <th style="width: 80px;">Equipe</th>
+                <th style="width: 60px; text-align: center;">Peso</th>
+                <th style="width: 100px; text-align: center;">Conceito</th>
+                <th style="width: 80px; text-align: center;">Tendência</th>
+                <th style="text-align: right;">Equipes Classificadas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ind in report.indicators %}
+              <tr>
+                <td><strong>{{ ind.indicator_code }}</strong></td>
+                <td>{{ ind.name }}</td>
+                <td><span class="badge">{{ ind.team_type }}</span></td>
+                <td style="text-align: center; font-weight: 700;">{{ ind.peso or '—' }}</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-{{ 'excellent' if ind.predominant == 'Ótimo' else ('good' if ind.predominant == 'Bom' else ('warning' if ind.predominant == 'Suficiente' else 'danger')) }}">
+                    {{ ind.predominant }}
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  {% if ind.trend == 'subiu' %}
+                    <span style="color: var(--teal-600); font-weight: 700;">↑ Subiu</span>
+                  {% elif ind.trend == 'caiu' %}
+                    <span style="color: var(--red-600); font-weight: 700;">↓ Caiu</span>
+                  {% else %}
+                    <span style="color: var(--slate-500);">Estável</span>
+                  {% endif %}
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:{{ ind.otimo }} | Bm:{{ ind.bom }} | Suf:{{ ind.suficiente }} | Reg:{{ ind.regular }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. Indicadores Prioritários que Demandam Ação -->
+      <section class="report-section">
+        <h3 class="report-section-title">3. Indicadores Prioritários que Demandam Ação da Coordenação</h3>
+        {% if report.attention_indicators %}
+          <div class="attention-list">
+            {% for item in report.attention_indicators %}
+            <div class="attention-card" style="margin-bottom: 12px; padding: 14px 18px; border-left: 4px solid var(--amber-500); background: var(--amber-50); border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong>{{ item.indicator_code }} · {{ item.name }}</strong>
+                <span class="badge badge-warning">Atenção Prioritária</span>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-700);">
+                Tipo: <strong>{{ item.team_type }}</strong> | Peso Oficial: <strong>{{ item.peso }}</strong> | Conceito Atual: <strong>{{ item.predominant }}</strong> | Tendência: <strong>{{ item.trend }}</strong>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-600); margin-top: 6px;">
+                Recomendação da APS: Realizar alinhamento com os profissionais da equipe, busca ativa nos microterritórios e qualificação dos registros no e-SUS APS.
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="font-size: 13px; color: var(--teal-600); font-weight: 600;">
+            ✓ Todas as práticas atingiram conceitos satisfatórios neste período. Nenhuma ação corretiva emergencial identificada.
+          </p>
+        {% endif %}
+      </section>
+
+      <!-- 4. Plano de Ações Vigente -->
+      <section class="report-section">
+        <h3 class="report-section-title">4. Plano de Ações de Melhoria Cadastrado</h3>
+        {% if report.improvement_actions %}
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">ID</th>
+                <th>Ação Proposta</th>
+                <th style="width: 100px;">Equipe / Indicador</th>
+                <th style="width: 160px;">Responsável</th>
+                <th style="width: 90px;">Prazo</th>
+                <th style="width: 100px; text-align: center;">Situação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ac in report.improvement_actions %}
+              <tr>
+                <td>#{{ ac.id }}</td>
+                <td>
+                  <strong>{{ ac.title }}</strong>
+                  {% if ac.description %}<div style="font-size: 11px; color: var(--slate-500); margin-top: 2px;">{{ ac.description }}</div>{% endif %}
+                </td>
+                <td><span class="badge">{{ ac.team_type }}</span> {{ ac.indicator_code or '' }}</td>
+                <td>{{ ac.responsible }}</td>
+                <td style="font-family: var(--font-mono); font-size: 12px;">{{ ac.deadline }}</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-{{ 'excellent' if ac.status == 'concluido' else ('blue' if ac.status == 'em_andamento' else 'warning') }}">
+                    {{ ac.status }}
+                  </span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p style="font-size: 12px; color: var(--slate-500);">Nenhuma ação cadastrada para este período.</p>
+        {% endif %}
+      </section>
+
+      <!-- 5. Trilha de Auditoria e Integridade SHA-256 -->
+      <section class="report-section">
+        <h3 class="report-section-title">5. Trilha de Auditoria & Hashes Criptográficos Oficiais</h3>
+        <p style="font-size: 12px; color: var(--slate-600); margin-bottom: 12px;">
+          Os dados deste relatório foram gerados exclusivamente a partir dos relatórios públicos do Ministério da Saúde, cujas assinaturas SHA-256 foram validadas no momento da captura:
+        </p>
+        <table class="data-table" style="font-size: 11px;">
+          <thead>
+            <tr>
+              <th>Relatório Oficial</th>
+              <th>Data/Hora Coleta (UTC)</th>
+              <th>Tamanho</th>
+              <th>Assinatura SHA-256</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for rf in report.raw_files %}
+            <tr>
+              <td><strong>{{ rf.filename }}</strong></td>
+              <td style="font-family: var(--font-mono);">{{ rf.fetched_at[:19] }}Z</td>
+              <td>{{ (rf.file_size / 1024)|round(1) }} KB</td>
+              <td style="font-family: var(--font-mono); font-size: 10px; word-break: break-all;">{{ rf.sha256_hash }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Termo de Encerramento e Assinaturas Formais -->
+      <div class="signatures-grid">
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <strong>Coordenação da Atenção Primária à Saúde</strong>
+          <div class="signature-title">Secretaria Municipal de Saúde de Pacujá/CE</div>
+        </div>
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <strong>Secretário(a) Municipal de Saúde</strong>
+          <div class="signature-title">Prefeitura Municipal de Pacujá/CE</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

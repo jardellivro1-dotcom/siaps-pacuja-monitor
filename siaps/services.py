@@ -412,3 +412,90 @@ def delete_improvement_action(action_id: int, db_path: Path | None = None) -> bo
         affected = cur.rowcount
     conn.close()
     return affected > 0
+
+
+def get_executive_report_data(
+    period: str | None = None,
+    team_type: str | None = None,
+    db_path: Path | None = None,
+) -> dict[str, Any]:
+    """Compila os dados consolidados para o relatório executivo oficial da APS Pacujá."""
+    summary = get_dashboard_summary(period=period, team_type=team_type, db_path=db_path)
+    actions = list_improvement_actions(db_path=db_path)
+    raw_files = list_raw_files(db_path=db_path)
+
+    # Identificar totalizadores para a liderança
+    indicators = summary.get("indicators", [])
+    otimo_count = sum(1 for ind in indicators if ind.get("predominant") == "Ótimo")
+    bom_count = sum(1 for ind in indicators if ind.get("predominant") == "Bom")
+    suficiente_count = sum(1 for ind in indicators if ind.get("predominant") == "Suficiente")
+    regular_count = sum(1 for ind in indicators if ind.get("predominant") == "Regular")
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "municipality": "Pacujá",
+        "state": "CE",
+        "ibge": "230990",
+        "period": summary.get("period"),
+        "available_periods": summary.get("available_periods", []),
+        "previous_period": summary.get("previous_period"),
+        "kpis": summary.get("kpis", {}),
+        "teams": summary.get("teams", []),
+        "indicators": indicators,
+        "attention_indicators": summary.get("attention_indicators", []),
+        "component_summaries": summary.get("component_summaries", []),
+        "cvat_dimensions": summary.get("cvat_dimensions", []),
+        "improvement_actions": actions,
+        "raw_files": raw_files,
+        "counts_by_concept": {
+            "otimo": otimo_count,
+            "bom": bom_count,
+            "suficiente": suficiente_count,
+            "regular": regular_count,
+            "total": len(indicators),
+        },
+        "methodology": summary.get("methodology", {}),
+    }
+
+
+def get_monthly_tracking_status(db_path: Path | None = None) -> dict[str, Any]:
+    """Fornece informações detalhadas sobre a rotina de acompanhamento e sincronização mês a mês."""
+    init_db(db_path)
+    conn = get_connection(db_path)
+    try:
+        syncs = conn.execute(
+            """
+            SELECT id, timestamp, trigger_type, periods_found, files_downloaded, files_unchanged, status, message
+            FROM sync_history
+            ORDER BY id DESC
+            LIMIT 12
+            """
+        ).fetchall()
+
+        history = [dict(s) for s in syncs]
+        last_sync = history[0] if history else None
+
+        # Obter lista de quadrimestres e registros consolidados
+        periods_rows = conn.execute(
+            "SELECT DISTINCT period FROM component_summaries ORDER BY period DESC"
+        ).fetchall()
+        periods = [r["period"] for r in periods_rows]
+    finally:
+        conn.close()
+
+    now = datetime.now(timezone.utc)
+    # Próxima checagem programada (dia 5 do próximo mês às 06:00 UTC)
+    next_month = now.month + 1 if now.month < 12 else 1
+    next_year = now.year if now.month < 12 else now.year + 1
+    next_check = f"{next_year:04d}-{next_month:02d}-05T06:00:00Z"
+
+    return {
+        "status": "ativo",
+        "frequency": "Mensal (todo dia 5 às 06:00 UTC e sob demanda)",
+        "last_sync": last_sync,
+        "next_scheduled_check": next_check,
+        "total_periods_tracked": len(periods),
+        "available_periods": periods,
+        "recent_syncs": history,
+    }
+

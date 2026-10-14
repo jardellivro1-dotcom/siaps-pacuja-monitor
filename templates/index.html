@@ -46,6 +46,12 @@
           <span class="nav-icon">✓</span>Plano de Ações
           <span class="badge-counter" id="actions-count-badge">0</span>
         </a>
+        <a class="nav-item" href="#rotina-mensal" id="nav-mensal">
+          <span class="nav-icon">📅</span>Rotina Mês a Mês
+        </a>
+        <a class="nav-item" href="/relatorio" target="_blank" id="nav-relatorio">
+          <span class="nav-icon">📄</span>Relatório Executivo ↗
+        </a>
         <a class="nav-item" href="#auditoria" id="nav-auditoria">
           <span class="nav-icon">🛡️</span>Auditoria & CSVs
         </a>
@@ -75,6 +81,9 @@
           Atenção Primária <span>/</span> Monitoramento <span>/</span> Pacujá, CE
         </div>
         <div class="topbar-right">
+          <a href="/relatorio" target="_blank" class="btn btn-secondary btn-sm" id="btn-topbar-report" title="Abrir Relatório Executivo Oficial Imprimível">
+            <span class="icon">📄</span> Relatório Executivo
+          </a>
           <button class="btn btn-secondary btn-sm" id="btn-open-audit">
             <span class="icon">🛡️</span> Auditoria & Hash SHA-256
           </button>
@@ -345,6 +354,59 @@
 
         <div class="teams-grid" id="teams-grid-container">
           <!-- Cards de equipes preenchidos via JS -->
+        </div>
+      <!-- Rotina e Acompanhamento Mês a Mês -->
+      <section class="panel" id="rotina-mensal">
+        <div class="panel-heading">
+          <div>
+            <div class="badge-alert-header">GESTÃO LONGITUDINAL</div>
+            <h2>Rotina de Atualização e Acompanhamento Mês a Mês</h2>
+            <p>Verificação automatizada periódica junto ao catálogo público do Siaps/MS para identificar novas competências e reprocessamentos.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-sync-monthly">
+            <span class="icon">🔄</span> Executar Verificação Mensal Agora
+          </button>
+        </div>
+
+        <div class="kpi-grid" style="margin-bottom: 20px;">
+          <div class="kpi-card">
+            <span class="kpi-label">Status da Rotina</span>
+            <div class="kpi-value text-teal" style="font-size: 18px;" id="monthly-status">Ativo (Automático)</div>
+            <div class="kpi-desc">Agendamento mensal no dia 5</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Última Verificação</span>
+            <div class="kpi-value" style="font-size: 18px;" id="monthly-last-sync">—</div>
+            <div class="kpi-desc" id="monthly-last-msg">Histórico registrado</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Próxima Execução Prevista</span>
+            <div class="kpi-value text-blue" style="font-size: 18px;" id="monthly-next-check">05 do próximo mês</div>
+            <div class="kpi-desc">Robô de sincronização pública</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Quadrimestres Rastreados</span>
+            <div class="kpi-value text-violet" style="font-size: 18px;" id="monthly-periods-count">4 competências</div>
+            <div class="kpi-desc">2025Q1, Q2, Q3 e 2026Q1</div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>DATA / HORA (UTC)</th>
+                <th>TIPO DE GATILHO</th>
+                <th>SITUAÇÃO</th>
+                <th>ARQUIVOS VERIFICADOS</th>
+                <th>MUDANÇAS DETECTADAS</th>
+                <th>DETALHES DO REGISTRO</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-monthly-syncs">
+              <!-- Preenchido dinamicamente via JS -->
+            </tbody>
+          </table>
         </div>
       </section>
 

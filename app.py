@@ -15,6 +15,8 @@ from siaps.services import (
     create_improvement_action,
     delete_improvement_action,
     get_dashboard_summary,
+    get_executive_report_data,
+    get_monthly_tracking_status,
     get_system_status,
     list_improvement_actions,
     list_raw_files,
@@ -231,6 +233,48 @@ def create_app(test_config: dict | None = None) -> Flask:
                 "Resultados oficiais são de responsabilidade do Ministério da Saúde / Siaps."
             ]
         )
+
+    @app.get("/relatorio")
+    def relatorio_view():
+        """Página visual e imprimível do Relatório Executivo da APS Pacujá."""
+        raw_period = request.args.get("period")
+        raw_team = request.args.get("team_type")
+        period = validate_period(raw_period)
+        team_type = validate_team_type(raw_team)
+
+        db_path = Path(app.config["DB_PATH"])
+        data = get_executive_report_data(period=period, team_type=team_type, db_path=db_path)
+        return render_template("relatorio.html", report=data)
+
+    @app.get("/api/relatorio")
+    def api_relatorio():
+        """Retorna dados estruturados do Relatório Executivo para exportação ou integração."""
+        raw_period = request.args.get("period")
+        raw_team = request.args.get("team_type")
+        period = validate_period(raw_period)
+        team_type = validate_team_type(raw_team)
+
+        db_path = Path(app.config["DB_PATH"])
+        data = get_executive_report_data(period=period, team_type=team_type, db_path=db_path)
+        return jsonify(data)
+
+    @app.get("/api/monthly-tracking")
+    def monthly_tracking():
+        """Status da rotina e histórico de acompanhamento mês a mês."""
+        db_path = Path(app.config["DB_PATH"])
+        return jsonify(get_monthly_tracking_status(db_path=db_path))
+
+    @app.post("/api/sync/monthly")
+    @require_admin_if_configured
+    def sync_monthly():
+        """Dispara verificação da rotina mensal de atualização dos dados públicos do Siaps."""
+        raw_dir = Path(app.config["RAW_DATA_DIR"])
+        db_path = Path(app.config["DB_PATH"])
+        result = sync_siaps_data(db_path=db_path, raw_dir=raw_dir, trigger_type="rotina_mensal")
+        if result.get("status") == "busy":
+            return jsonify(result), 409
+        status_code = 200 if result.get("status") == "success" else 500
+        return jsonify(result), status_code
 
     return app
 

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: siaps-pacuja-monitor
+    env: python
+    plan: free
+    region: ohio
+    buildCommand: "pip install -r requirements.txt && python -c 'from siaps.models import init_db; from pathlib import Path; init_db(Path(\"data/siaps_monitor.db\"))'"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SIAPS_SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.12.9

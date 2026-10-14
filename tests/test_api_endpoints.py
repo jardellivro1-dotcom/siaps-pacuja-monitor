@@ -95,6 +95,21 @@ class TestApiEndpoints(unittest.TestCase):
         self.assertEqual(res_traversal.status_code, 404)
         res_traversal.close()
 
+    def test_relatorio_view_and_api(self):
+        res = self.client.get("/relatorio")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("Relatório Executivo", res.text)
+
+        res_api = self.client.get("/api/relatorio")
+        self.assertEqual(res_api.status_code, 200)
+        self.assertEqual(res_api.json["municipality"], "Pacujá")
+        self.assertIn("counts_by_concept", res_api.json)
+
+    def test_monthly_tracking_endpoint(self):
+        res = self.client.get("/api/monthly-tracking")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json["status"], "ativo")
+        self.assertIn("next_scheduled_check", res.json)
 
 
 if __name__ == "__main__":
