@@ -1,0 +1,114 @@
+{
+  "status": "ativo",
+  "frequency": "Mensal (todo dia 5 às 06:00 UTC e sob demanda)",
+  "last_sync": {
+    "id": 9,
+    "timestamp": "2026-10-14T04:54:13.347419+00:00",
+    "trigger_type": "rotina_mensal",
+    "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+    "files_downloaded": 0,
+    "files_unchanged": 4,
+    "status": "success",
+    "message": "Sincronização concluída com sucesso."
+  },
+  "next_scheduled_check": "2026-11-05T06:00:00Z",
+  "total_periods_tracked": 4,
+  "available_periods": [
+    "2026Q1",
+    "2025Q3",
+    "2025Q2",
+    "2025Q1"
+  ],
+  "recent_syncs": [
+    {
+      "id": 9,
+      "timestamp": "2026-10-14T04:54:13.347419+00:00",
+      "trigger_type": "rotina_mensal",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 0,
+      "files_unchanged": 4,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 8,
+      "timestamp": "2026-10-14T04:47:59.631821+00:00",
+      "trigger_type": "rotina_mensal",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 0,
+      "files_unchanged": 4,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 7,
+      "timestamp": "2026-10-14T04:47:41.312020+00:00",
+      "trigger_type": "rotina_mensal",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 0,
+      "files_unchanged": 4,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 6,
+      "timestamp": "2026-10-14T04:32:15.581983+00:00",
+      "trigger_type": "web_dashboard",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 0,
+      "files_unchanged": 4,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 5,
+      "timestamp": "2026-10-14T04:31:24.743982+00:00",
+      "trigger_type": "web_dashboard",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 0,
+      "files_unchanged": 4,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 4,
+      "timestamp": "2026-10-14T03:10:51.224192+00:00",
+      "trigger_type": "cli",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 0,
+      "files_unchanged": 4,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 3,
+      "timestamp": "2026-10-14T03:09:40.835444+00:00",
+      "trigger_type": "cli",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 4,
+      "files_unchanged": 0,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 2,
+      "timestamp": "2026-10-14T03:08:03.091979+00:00",
+      "trigger_type": "cli",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 4,
+      "files_unchanged": 0,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    },
+    {
+      "id": 1,
+      "timestamp": "2026-10-14T03:07:42.415734+00:00",
+      "trigger_type": "cli",
+      "periods_found": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "files_downloaded": 4,
+      "files_unchanged": 0,
+      "status": "success",
+      "message": "Sincronização concluída com sucesso."
+    }
+  ]
+}

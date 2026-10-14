@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2141">
+  <title>Acesso à Gestão · Monitor APS Pacujá</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/app.css">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: radial-gradient(circle at 50% 20%, #152c50 0%, #08162b 100%);
+    }
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface, #10243e);
+      border: 1px solid var(--border-soft, #1e3a5f);
+      border-radius: 1rem;
+      padding: 2.25rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .login-header .brand-mark {
+      margin: 0 auto 1rem;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #00a8ff, #0056b3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 168, 255, 0.3);
+    }
+    .login-header h1 {
+      font-size: 1.35rem;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 0.4rem;
+    }
+    .login-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted, #8fa3bf);
+      margin: 0;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted, #8fa3bf);
+      margin-bottom: 0.5rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(8, 22, 43, 0.7);
+      border: 1px solid var(--border-soft, #1e3a5f);
+      border-radius: 0.5rem;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #00a8ff;
+      box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.25);
+    }
+    .btn-login {
+      width: 100%;
+      padding: 0.85rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #0077cc, #005599);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: filter 0.2s, transform 0.1s;
+    }
+    .btn-login:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+    .btn-login:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .login-info {
+      margin-top: 1.5rem;
+      padding: 0.85rem;
+      background: rgba(0, 168, 255, 0.06);
+      border-left: 3px solid #00a8ff;
+      border-radius: 0.35rem;
+      font-size: 0.78rem;
+      color: var(--text-muted, #8fa3bf);
+      line-height: 1.45;
+    }
+    .login-footer-links {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.82rem;
+    }
+    .login-footer-links a {
+      color: #00a8ff;
+      text-decoration: none;
+    }
+    .login-footer-links a:hover {
+      text-decoration: underline;
+    }
+    .alert-box {
+      display: none;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .alert-error {
+      background: rgba(220, 53, 69, 0.15);
+      border: 1px solid rgba(220, 53, 69, 0.4);
+      color: #ff8591;
+    }
+    .alert-success {
+      background: rgba(40, 167, 69, 0.15);
+      border: 1px solid rgba(40, 167, 69, 0.4);
+      color: #75e093;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <main class="login-card" role="main" aria-labelledby="login-title">
+      <div class="login-header">
+        <div class="brand-mark" aria-hidden="true">
+          <span style="font-size: 1.5rem;">🛡️</span>
+        </div>
+        <h1 id="login-title">Acesso à Gestão Municipal</h1>
+        <p>Secretaria Municipal de Saúde · Pacujá/CE</p>
+      </div>
+
+      <div id="alert-message" class="alert-box alert-error" role="alert" aria-live="assertive"></div>
+
+      <form id="login-form" autocomplete="on">
+        <div class="form-group">
+          <label for="username">Usuário Institucional</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-control"
+            required
+            autocomplete="username"
+            autofocus
+            placeholder="Ex: coordenacao_aps"
+            aria-required="true"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Senha de Acesso</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            required
+            autocomplete="current-password"
+            placeholder="••••••••••••"
+            aria-required="true"
+          >
+        </div>
+
+        <button type="submit" class="btn-login" id="submit-btn">
+          <span id="btn-text">Entrar no Sistema</span>
+          <span id="btn-spinner" style="display:none;">⏳ Autenticando...</span>
+        </button>
+      </form>
+
+      <div class="login-info">
+        <strong>Perfis Homologados:</strong> Coordenação APS, Equipes de Saúde (eSF/eSB/eMulti) e Administração Municipal. Proteção contra ataques de força bruta ativa (bloqueio temporário após 5 tentativas incorretas).
+      </div>
+
+      <div class="login-footer-links">
+        <a href="/">← Retornar ao Painel Público de Indicadores</a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById('login-form');
+    const alertBox = document.getElementById('alert-message');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.style.display = 'none';
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        alertBox.className = 'alert-box alert-error';
+        alertBox.textContent = 'Preencha o usuário e a senha.';
+        alertBox.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline';
+
+      try {
+        const resp = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await resp.json();
+
+        if (resp.ok) {
+          alertBox.className = 'alert-box alert-success';
+          alertBox.textContent = 'Autenticado com sucesso! Redirecionando...';
+          alertBox.style.display = 'block';
+          setTimeout(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const nextUrl = urlParams.get('next') || '/';
+            window.location.href = nextUrl;
+          }, 800);
+        } else {
+          alertBox.className = 'alert-box alert-error';
+          alertBox.textContent = data.error || 'Credenciais inválidas. Verifique seu usuário e senha.';
+          alertBox.style.display = 'block';
+          submitBtn.disabled = false;
+          btnText.style.display = 'inline';
+          btnSpinner.style.display = 'none';
+        }
+      } catch (err) {
+        alertBox.className = 'alert-box alert-error';
+        alertBox.textContent = 'Erro de comunicação com o servidor local. Tente novamente.';
+        alertBox.style.display = 'block';
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

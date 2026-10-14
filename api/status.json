@@ -1,0 +1,38 @@
+{
+  "status": "dados_validados",
+  "municipality": "Pacujá",
+  "state": "CE",
+  "ibge": "230990",
+  "reports_count": 4,
+  "teams_count": 8,
+  "available_periods": [
+    "2026Q1",
+    "2025Q3",
+    "2025Q2",
+    "2025Q1"
+  ],
+  "last_sync": {
+    "timestamp": "2026-10-14T04:54:13.347419+00:00",
+    "status": "success",
+    "message": "Sincronização concluída com sucesso."
+  },
+  "message": "4 arquivos públicos oficiais importados e auditados para Pacujá, CE.",
+  "methodology": {
+    "documento": "Nota Técnica nº 8/2026-DEAPS/SAPS/MS",
+    "publicacao": "02/10/2026",
+    "revoga": "Nota Técnica nº 6/2025",
+    "equipes_elegiveis": [
+      "eSF",
+      "eAP",
+      "eSB",
+      "eMulti"
+    ],
+    "equipes_excluidas": [
+      "eAPP",
+      "eCR",
+      "eSFR"
+    ]
+  },
+  "app_version": "1.0.0",
+  "hosting_mode": "github_pages_static"
+}

@@ -1,0 +1,52 @@
+{
+  "teams": [
+    {
+      "co_equipe": "0001502123",
+      "no_equipe": "EQUIPE MULTI SEDE II PACUJA",
+      "sg_equipe": "eMulti",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    },
+    {
+      "co_equipe": "0002522071",
+      "no_equipe": "EQUIPE MULTI ZONA RURAL PACUJA",
+      "sg_equipe": "eMulti",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    },
+    {
+      "co_equipe": "0002089971",
+      "no_equipe": "ESB SEDE I",
+      "sg_equipe": "eSB",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    },
+    {
+      "co_equipe": "0002089998",
+      "no_equipe": "ESB SEDE II",
+      "sg_equipe": "eSB",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    },
+    {
+      "co_equipe": "0002090589",
+      "no_equipe": "ESB ZONA RURAL",
+      "sg_equipe": "eSB",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    },
+    {
+      "co_equipe": "0000100102",
+      "no_equipe": "CENTRO DE SAUDE DE PACUJA",
+      "sg_equipe": "eSF",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    },
+    {
+      "co_equipe": "0000100129",
+      "no_equipe": "ESF - SEDE II",
+      "sg_equipe": "eSF",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    },
+    {
+      "co_equipe": "0000100110",
+      "no_equipe": "ESF ZONA RURAL",
+      "sg_equipe": "eSF",
+      "updated_at": "2026-10-14T04:54:13.347419+00:00"
+    }
+  ]
+}

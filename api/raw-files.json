@@ -1,0 +1,56 @@
+{
+  "files": [
+    {
+      "id": 1,
+      "filename": "Relatorio_Publico_Classificacao_Geral_dos_Componentes.csv",
+      "report_type": "geral_componentes",
+      "component": "Componente II e III",
+      "period": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "source_url": "https://apisiaps.saude.gov.br/api/public/componente/indicador-quadrimestre/filtro",
+      "fetched_at": "2026-10-14T03:09:40.835444+00:00",
+      "file_size": 2347,
+      "sha256_hash": "af85430d7c25acfc8728a0c5aae4f14516ee101c3b0b996f0a677b431fd2dd6f",
+      "status": "updated",
+      "notes": "Importado do catálogo público oficial do Siaps"
+    },
+    {
+      "id": 2,
+      "filename": "Relatorio_Publico_Classificacao_por_Dimensao_CVAT.csv",
+      "report_type": "cvat_dimensao",
+      "component": "Componente II",
+      "period": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "source_url": "https://apisiaps.saude.gov.br/api/public/componente/indicador-quadrimestre/filtro",
+      "fetched_at": "2026-10-14T03:09:40.835444+00:00",
+      "file_size": 1548,
+      "sha256_hash": "dc0f78d2c2fcc4d419e55da055c31af038b0dee315bc642aea4f52cf15d0a52b",
+      "status": "updated",
+      "notes": "Importado do catálogo público oficial do Siaps"
+    },
+    {
+      "id": 3,
+      "filename": "Relatorio_Publico_Classificacao_Final_Qualidade.csv",
+      "report_type": "qualidade_final",
+      "component": "Componente III",
+      "period": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "source_url": "https://apisiaps.saude.gov.br/api/public/componente/indicador-quadrimestre/filtro",
+      "fetched_at": "2026-10-14T03:09:40.835444+00:00",
+      "file_size": 2221,
+      "sha256_hash": "48642fb61c3848c8fff7feb4a08229c9df4308b350b46a66cdf6f352c063e63d",
+      "status": "updated",
+      "notes": "Importado do catálogo público oficial do Siaps"
+    },
+    {
+      "id": 4,
+      "filename": "Relatorio_Publico_Conceito_por_Indicador_Qualidade.csv",
+      "report_type": "qualidade_indicador",
+      "component": "Componente III",
+      "period": "2025Q1, 2025Q2, 2025Q3, 2026Q1",
+      "source_url": "https://apisiaps.saude.gov.br/api/public/componente/indicador-quadrimestre/filtro",
+      "fetched_at": "2026-10-14T03:09:40.835444+00:00",
+      "file_size": 7190,
+      "sha256_hash": "be20732848043deec5956b8da9f61e40e5d5598cb72ee3c4cb615776bdb05740",
+      "status": "updated",
+      "notes": "Importado do catálogo público oficial do Siaps"
+    }
+  ]
+}

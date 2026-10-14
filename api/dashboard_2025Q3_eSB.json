@@ -1,0 +1,376 @@
+{
+  "period": "2025Q3",
+  "available_periods": [
+    "2025Q1",
+    "2025Q2",
+    "2025Q3",
+    "2026Q1"
+  ],
+  "previous_period": "2025Q2",
+  "kpis": {
+    "component_2": {
+      "title": "Vínculo e acompanhamento",
+      "label": "100% Ótimo",
+      "desc": "3 equipes eSF avaliadas no 2025Q3",
+      "class": "excellent"
+    },
+    "component_3": {
+      "title": "Qualidade do cuidado",
+      "label": "100.0% Bom/Ótimo",
+      "predominant": "Bom",
+      "desc": "3 equipes com avaliação publicada",
+      "class": "good"
+    },
+    "teams_count": 8,
+    "last_check": "2026-10-14"
+  },
+  "teams": [
+    {
+      "co_equipe": "0001502123",
+      "no_equipe": "EQUIPE MULTI SEDE II PACUJA",
+      "sg_equipe": "eMulti"
+    },
+    {
+      "co_equipe": "0002522071",
+      "no_equipe": "EQUIPE MULTI ZONA RURAL PACUJA",
+      "sg_equipe": "eMulti"
+    },
+    {
+      "co_equipe": "0002089971",
+      "no_equipe": "ESB SEDE I",
+      "sg_equipe": "eSB"
+    },
+    {
+      "co_equipe": "0002089998",
+      "no_equipe": "ESB SEDE II",
+      "sg_equipe": "eSB"
+    },
+    {
+      "co_equipe": "0002090589",
+      "no_equipe": "ESB ZONA RURAL",
+      "sg_equipe": "eSB"
+    },
+    {
+      "co_equipe": "0000100102",
+      "no_equipe": "CENTRO DE SAUDE DE PACUJA",
+      "sg_equipe": "eSF"
+    },
+    {
+      "co_equipe": "0000100129",
+      "no_equipe": "ESF - SEDE II",
+      "sg_equipe": "eSF"
+    },
+    {
+      "co_equipe": "0000100110",
+      "no_equipe": "ESF ZONA RURAL",
+      "sg_equipe": "eSF"
+    }
+  ],
+  "cvat_dimensions": [
+    {
+      "sg_equipe": "eSF",
+      "no_dimensao": "CVAT - Dimensão Acompanhamento",
+      "qtd_otimo": 3,
+      "qtd_bom": 0,
+      "qtd_suficiente": 0,
+      "qtd_regular": 0
+    },
+    {
+      "sg_equipe": "eSF",
+      "no_dimensao": "CVAT - Dimensão Cadastro",
+      "qtd_otimo": 3,
+      "qtd_bom": 0,
+      "qtd_suficiente": 0,
+      "qtd_regular": 0
+    }
+  ],
+  "component_summaries": [
+    {
+      "id": 8,
+      "period": "2025Q3",
+      "sg_uf": "CE",
+      "ibge": "230990",
+      "municipio": "PACUJÁ",
+      "component": "Componente III",
+      "sg_equipe": "eSB",
+      "qtd_otimo": 1,
+      "pct_otimo": 33.33,
+      "qtd_bom": 2,
+      "pct_bom": 66.67,
+      "qtd_suficiente": 0,
+      "pct_suficiente": 0.0,
+      "qtd_regular": 0,
+      "pct_regular": 0.0,
+      "total_equipes": 3,
+      "raw_file_id": 3
+    }
+  ],
+  "indicators": [
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B1",
+      "co_tipo_indicador": 111,
+      "name": "1ª Consulta Odontológica programada na APS",
+      "peso": 2,
+      "regular": 0,
+      "suficiente": 0,
+      "bom": 0,
+      "otimo": 3,
+      "total_teams": 3,
+      "predominant": "Ótimo",
+      "trend": "subiu",
+      "needs_attention": false
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B2",
+      "co_tipo_indicador": 112,
+      "name": "Tratamento Odontológico concluído na APS",
+      "peso": 2,
+      "regular": 0,
+      "suficiente": 1,
+      "bom": 1,
+      "otimo": 1,
+      "total_teams": 3,
+      "predominant": "Ótimo",
+      "trend": "subiu",
+      "needs_attention": true
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B3",
+      "co_tipo_indicador": 113,
+      "name": "Taxa de exodontias na APS",
+      "peso": 2,
+      "regular": 0,
+      "suficiente": 0,
+      "bom": 0,
+      "otimo": 3,
+      "total_teams": 3,
+      "predominant": "Ótimo",
+      "trend": "estavel",
+      "needs_attention": false
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B4",
+      "co_tipo_indicador": 114,
+      "name": "Escovação Supervisionada na APS",
+      "peso": 1,
+      "regular": 3,
+      "suficiente": 0,
+      "bom": 0,
+      "otimo": 0,
+      "total_teams": 3,
+      "predominant": "Regular",
+      "trend": "caiu",
+      "needs_attention": true
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B5",
+      "co_tipo_indicador": 115,
+      "name": "Procedimentos Odontológicos preventivos na APS",
+      "peso": 2,
+      "regular": 3,
+      "suficiente": 0,
+      "bom": 0,
+      "otimo": 0,
+      "total_teams": 3,
+      "predominant": "Regular",
+      "trend": "estavel",
+      "needs_attention": true
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B6",
+      "co_tipo_indicador": 116,
+      "name": "Tratamento Restaurador Atraumático na APS",
+      "peso": 1,
+      "regular": 1,
+      "suficiente": 1,
+      "bom": 0,
+      "otimo": 1,
+      "total_teams": 3,
+      "predominant": "Ótimo",
+      "trend": "caiu",
+      "needs_attention": true
+    }
+  ],
+  "attention_indicators": [
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B2",
+      "co_tipo_indicador": 112,
+      "name": "Tratamento Odontológico concluído na APS",
+      "peso": 2,
+      "regular": 0,
+      "suficiente": 1,
+      "bom": 1,
+      "otimo": 1,
+      "total_teams": 3,
+      "predominant": "Ótimo",
+      "trend": "subiu",
+      "needs_attention": true
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B4",
+      "co_tipo_indicador": 114,
+      "name": "Escovação Supervisionada na APS",
+      "peso": 1,
+      "regular": 3,
+      "suficiente": 0,
+      "bom": 0,
+      "otimo": 0,
+      "total_teams": 3,
+      "predominant": "Regular",
+      "trend": "caiu",
+      "needs_attention": true
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B5",
+      "co_tipo_indicador": 115,
+      "name": "Procedimentos Odontológicos preventivos na APS",
+      "peso": 2,
+      "regular": 3,
+      "suficiente": 0,
+      "bom": 0,
+      "otimo": 0,
+      "total_teams": 3,
+      "predominant": "Regular",
+      "trend": "estavel",
+      "needs_attention": true
+    },
+    {
+      "period": "2025Q3",
+      "team_type": "eSB",
+      "indicator_code": "B6",
+      "co_tipo_indicador": 116,
+      "name": "Tratamento Restaurador Atraumático na APS",
+      "peso": 1,
+      "regular": 1,
+      "suficiente": 1,
+      "bom": 0,
+      "otimo": 1,
+      "total_teams": 3,
+      "predominant": "Ótimo",
+      "trend": "caiu",
+      "needs_attention": true
+    }
+  ],
+  "time_series": {
+    "periods": [
+      "2025Q1",
+      "2025Q2",
+      "2025Q3",
+      "2026Q1"
+    ],
+    "teams": {
+      "eMulti": {
+        "otimo": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "bom": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "suficiente": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "regular": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "eSB": {
+        "otimo": [
+          0,
+          0,
+          1,
+          3
+        ],
+        "bom": [
+          3,
+          3,
+          2,
+          0
+        ],
+        "suficiente": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "regular": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "eSF": {
+        "otimo": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "bom": [
+          3,
+          3,
+          3,
+          2
+        ],
+        "suficiente": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "regular": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "methodology": {
+    "documento": "Nota Técnica nº 8/2026-DEAPS/SAPS/MS",
+    "publicacao": "02/10/2026",
+    "revoga": "Nota Técnica nº 6/2025",
+    "equipes_elegiveis": [
+      "eSF",
+      "eAP",
+      "eSB",
+      "eMulti"
+    ],
+    "equipes_excluidas": [
+      "eAPP",
+      "eCR",
+      "eSFR"
+    ]
+  }
+}

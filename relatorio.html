@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2141">
+  <title>Relatório Executivo APS Pacujá · 2026Q1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/app.css">
+  <style>
+    /* Estilos específicos do Relatório Executivo */
+    .report-page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+    .report-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--slate-200);
+      margin-bottom: 24px;
+    }
+    .report-paper {
+      background: var(--white);
+      padding: 48px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--slate-200);
+    }
+    .report-header {
+      border-bottom: 2px solid var(--navy-800);
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .report-gov-title h1 {
+      font-size: 20px;
+      margin: 0 0 4px;
+      color: var(--navy-900);
+      font-family: var(--font-heading);
+    }
+    .report-gov-title h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-600);
+      margin: 0;
+    }
+    .report-badge-competencia {
+      background: var(--navy-900);
+      color: var(--white);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      text-align: right;
+    }
+    .report-section {
+      margin-bottom: 32px;
+    }
+    .report-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy-800);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--slate-200);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .signatures-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px dashed var(--slate-300);
+    }
+    .signature-block {
+      text-align: center;
+    }
+    .signature-line {
+      border-top: 1px solid var(--slate-700);
+      margin-bottom: 8px;
+      margin-top: 40px;
+    }
+    .signature-title {
+      font-size: 12px;
+      color: var(--slate-600);
+    }
+    .concept-counts-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .concept-count-card {
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      border: 1px solid var(--slate-200);
+    }
+    .concept-count-card strong {
+      display: block;
+      font-size: 20px;
+      font-family: var(--font-mono);
+    }
+    .concept-count-card small {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* Regras de Impressão A4 / PDF */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt;
+      }
+      .report-actions-bar,
+      .skip-link,
+      header,
+      button,
+      nav {
+        display: none !important;
+      }
+      .report-page {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .report-paper {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .report-section {
+        page-break-inside: avoid;
+      }
+      .signatures-grid {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <!-- Skip Link -->
+  <a href="#report-content" class="skip-link">Pular para o conteúdo do relatório</a>
+
+  <div class="report-page">
+    <!-- Barra Superior de Ações (Oculta na Impressão) -->
+    <div class="report-actions-bar" role="toolbar" aria-label="Ações do Relatório">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="/" class="btn btn-secondary btn-sm" id="btn-voltar">
+          ← Voltar ao Painel
+        </a>
+        <div style="font-size: 13px; font-weight: 600; color: var(--slate-600);">
+          Período selecionado:
+        </div>
+        <select id="report-period-select" class="form-select form-select-sm" style="width: 140px;" onchange="window.location.href='/relatorio?period=' + this.value">
+          
+            <option value="2025Q1" >2025Q1</option>
+          
+            <option value="2025Q2" >2025Q2</option>
+          
+            <option value="2025Q3" >2025Q3</option>
+          
+            <option value="2026Q1" selected>2026Q1</option>
+          
+        </select>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="/api/relatorio?period=2026Q1" target="_blank" class="btn btn-secondary btn-sm" id="btn-export-json">
+          📥 Exportar JSON
+        </a>
+        <button class="btn btn-primary btn-sm" onclick="window.print()" id="btn-imprimir">
+          🖨️ Imprimir / Salvar em PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Documento Formal do Relatório -->
+    <main class="report-paper" id="report-content" tabindex="-1">
+      <!-- Cabeçalho Oficial -->
+      <header class="report-header">
+        <div>
+          <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.15em; color: var(--teal-600); text-transform: uppercase; margin-bottom: 4px;">
+            ESTADO DO CEARÁ · PREFEITURA MUNICIPAL DE PACUJÁ
+          </div>
+          <div class="report-gov-title">
+            <h1>Secretaria Municipal de Saúde · Coordenação da APS</h1>
+            <h2>Relatório Executivo de Desempenho e Qualidade do Cofinanciamento da Atenção Primária</h2>
+          </div>
+          <div style="margin-top: 8px; font-size: 12px; color: var(--slate-600);">
+            Regulamentação: <strong>Nota Técnica nº 8/2026-DEAPS/SAPS/MS</strong> · IBGE: <strong>230990</strong>
+          </div>
+        </div>
+        <div class="report-badge-competencia">
+          <div>COMPETÊNCIA</div>
+          <div style="font-size: 18px;">2026Q1</div>
+          <div style="font-size: 10px; opacity: 0.8; font-weight: 400; margin-top: 2px;">Oficial Siaps</div>
+        </div>
+      </header>
+
+      <!-- 1. Sumário Executivo de Liderança -->
+      <section class="report-section">
+        <h3 class="report-section-title">1. Sumário Executivo de Liderança</h3>
+        <p style="font-size: 13px; color: var(--slate-700); line-height: 1.6; margin-bottom: 20px;">
+          O presente relatório consolida os resultados oficiais obtidos pelas equipes municipais de Atenção Primária à Saúde de Pacujá no <strong>2026Q1</strong>, conforme dados auditados do catálogo público do Siaps/MS. Os valores servem de base para acompanhamento de metas, alocação de recursos e definição do plano de ação contínuo.
+        </p>
+
+        <div class="kpi-grid" style="margin-bottom: 24px;">
+          <div class="kpi-card highlight">
+            <span class="kpi-label">Componente II · Vínculo Territorial</span>
+            <div class="kpi-value text-teal">100% Ótimo</div>
+            <div class="kpi-desc">Cadastro e Acompanhamento das equipes eSF</div>
+          </div>
+          <div class="kpi-card highlight">
+            <span class="kpi-label">Componente III · Qualidade do Cuidado</span>
+            <div class="kpi-value text-blue">100.0% Bom/Ótimo</div>
+            <div class="kpi-desc">Conceito predominante: <strong>Ótimo</strong></div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Equipes Municipais Avaliadas</span>
+            <div class="kpi-value">8</div>
+            <div class="kpi-desc">Saúde da Família, Saúde Bucal e eMulti</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Práticas em Alerta / Atenção</span>
+            <div class="kpi-value text-amber">4</div>
+            <div class="kpi-desc">Demanda de intervenção prioritária</div>
+          </div>
+        </div>
+
+        <!-- Distribuição por Conceito -->
+        <div class="concept-counts-grid">
+          <div class="concept-count-card" style="background: var(--teal-50); border-color: var(--teal-100);">
+            <strong style="color: var(--teal-600);">6</strong>
+            <small style="color: var(--teal-600);">Conceito Ótimo</small>
+          </div>
+          <div class="concept-count-card" style="background: var(--blue-50); border-color: var(--blue-100);">
+            <strong style="color: var(--blue-600);">6</strong>
+            <small style="color: var(--blue-600);">Conceito Bom</small>
+          </div>
+          <div class="concept-count-card" style="background: var(--amber-50); border-color: var(--amber-100);">
+            <strong style="color: var(--amber-600);">2</strong>
+            <small style="color: var(--amber-600);">Conceito Suficiente</small>
+          </div>
+          <div class="concept-count-card" style="background: var(--red-50); border-color: var(--red-100);">
+            <strong style="color: var(--red-600);">1</strong>
+            <small style="color: var(--red-600);">Conceito Regular</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Detalhamento de Indicadores NT 8/2026 -->
+      <section class="report-section">
+        <h3 class="report-section-title">2. Resultados por Indicador da Nota Técnica nº 8/2026</h3>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Cód.</th>
+                <th>Indicador de Qualidade</th>
+                <th style="width: 80px;">Equipe</th>
+                <th style="width: 60px; text-align: center;">Peso</th>
+                <th style="width: 100px; text-align: center;">Conceito</th>
+                <th style="width: 80px; text-align: center;">Tendência</th>
+                <th style="text-align: right;">Equipes Classificadas</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>M1</strong></td>
+                <td>Média de atendimentos da eMulti por pessoa</td>
+                <td><span class="badge">eMulti</span></td>
+                <td style="text-align: center; font-weight: 700;">6</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-good">
+                    Bom
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:0 | Bm:1 | Suf:1 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>M2</strong></td>
+                <td>Ações interprofissionais realizadas pela eMulti na APS</td>
+                <td><span class="badge">eMulti</span></td>
+                <td style="text-align: center; font-weight: 700;">4</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-excellent">
+                    Ótimo
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:2 | Bm:0 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>B1</strong></td>
+                <td>1ª Consulta Odontológica programada na APS</td>
+                <td><span class="badge">eSB</span></td>
+                <td style="text-align: center; font-weight: 700;">2</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-excellent">
+                    Ótimo
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:3 | Bm:0 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>B2</strong></td>
+                <td>Tratamento Odontológico concluído na APS</td>
+                <td><span class="badge">eSB</span></td>
+                <td style="text-align: center; font-weight: 700;">2</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-good">
+                    Bom
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--teal-600); font-weight: 700;">↑ Subiu</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:1 | Bm:2 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>B3</strong></td>
+                <td>Taxa de exodontias na APS</td>
+                <td><span class="badge">eSB</span></td>
+                <td style="text-align: center; font-weight: 700;">2</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-excellent">
+                    Ótimo
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:3 | Bm:0 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>B4</strong></td>
+                <td>Escovação Supervisionada na APS</td>
+                <td><span class="badge">eSB</span></td>
+                <td style="text-align: center; font-weight: 700;">1</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-excellent">
+                    Ótimo
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--teal-600); font-weight: 700;">↑ Subiu</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:3 | Bm:0 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>B5</strong></td>
+                <td>Procedimentos Odontológicos preventivos na APS</td>
+                <td><span class="badge">eSB</span></td>
+                <td style="text-align: center; font-weight: 700;">2</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-danger">
+                    Regular
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:0 | Bm:0 | Suf:1 | Reg:2
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>B6</strong></td>
+                <td>Tratamento Restaurador Atraumático na APS</td>
+                <td><span class="badge">eSB</span></td>
+                <td style="text-align: center; font-weight: 700;">1</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-excellent">
+                    Ótimo
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--teal-600); font-weight: 700;">↑ Subiu</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:3 | Bm:0 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>C5</strong></td>
+                <td>Cuidado da Pessoa com Hipertensão</td>
+                <td><span class="badge">eSF</span></td>
+                <td style="text-align: center; font-weight: 700;">1</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-excellent">
+                    Ótimo
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:2 | Bm:1 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>C4</strong></td>
+                <td>Cuidado da Pessoa com Diabetes Mellitus</td>
+                <td><span class="badge">eSF</span></td>
+                <td style="text-align: center; font-weight: 700;">1</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-good">
+                    Bom
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:1 | Bm:2 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>C6</strong></td>
+                <td>Cuidado da Pessoa Idosa</td>
+                <td><span class="badge">eSF</span></td>
+                <td style="text-align: center; font-weight: 700;">1</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-good">
+                    Bom
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:0 | Bm:3 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>C3</strong></td>
+                <td>Cuidado da Gestante e da Puérpera</td>
+                <td><span class="badge">eSF</span></td>
+                <td style="text-align: center; font-weight: 700;">2</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-good">
+                    Bom
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:1 | Bm:2 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>C2</strong></td>
+                <td>Cuidado no Desenvolvimento Infantil</td>
+                <td><span class="badge">eSF</span></td>
+                <td style="text-align: center; font-weight: 700;">2</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-warning">
+                    Suficiente
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:0 | Bm:0 | Suf:3 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>C7</strong></td>
+                <td>Cuidado Integral à Saúde da Mulher</td>
+                <td><span class="badge">eSF</span></td>
+                <td style="text-align: center; font-weight: 700;">2</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-warning">
+                    Suficiente
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--teal-600); font-weight: 700;">↑ Subiu</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:0 | Bm:1 | Suf:2 | Reg:0
+                </td>
+              </tr>
+              
+              <tr>
+                <td><strong>C1</strong></td>
+                <td>Mais Acesso à Atenção Primária à Saúde</td>
+                <td><span class="badge">eSF</span></td>
+                <td style="text-align: center; font-weight: 700;">1</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-good">
+                    Bom
+                  </span>
+                </td>
+                <td style="text-align: center; font-size: 12px;">
+                  
+                    <span style="color: var(--slate-500);">Estável</span>
+                  
+                </td>
+                <td style="text-align: right; font-family: var(--font-mono); font-size: 12px;">
+                  Ót:1 | Bm:2 | Suf:0 | Reg:0
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. Indicadores Prioritários que Demandam Ação -->
+      <section class="report-section">
+        <h3 class="report-section-title">3. Indicadores Prioritários que Demandam Ação da Coordenação</h3>
+        
+          <div class="attention-list">
+            
+            <div class="attention-card" style="margin-bottom: 12px; padding: 14px 18px; border-left: 4px solid var(--amber-500); background: var(--amber-50); border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong>M1 · Média de atendimentos da eMulti por pessoa</strong>
+                <span class="badge badge-warning">Atenção Prioritária</span>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-700);">
+                Tipo: <strong>eMulti</strong> | Peso Oficial: <strong>6</strong> | Conceito Atual: <strong>Bom</strong> | Tendência: <strong>estavel</strong>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-600); margin-top: 6px;">
+                Recomendação da APS: Realizar alinhamento com os profissionais da equipe, busca ativa nos microterritórios e qualificação dos registros no e-SUS APS.
+              </div>
+            </div>
+            
+            <div class="attention-card" style="margin-bottom: 12px; padding: 14px 18px; border-left: 4px solid var(--amber-500); background: var(--amber-50); border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong>B5 · Procedimentos Odontológicos preventivos na APS</strong>
+                <span class="badge badge-warning">Atenção Prioritária</span>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-700);">
+                Tipo: <strong>eSB</strong> | Peso Oficial: <strong>2</strong> | Conceito Atual: <strong>Regular</strong> | Tendência: <strong>estavel</strong>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-600); margin-top: 6px;">
+                Recomendação da APS: Realizar alinhamento com os profissionais da equipe, busca ativa nos microterritórios e qualificação dos registros no e-SUS APS.
+              </div>
+            </div>
+            
+            <div class="attention-card" style="margin-bottom: 12px; padding: 14px 18px; border-left: 4px solid var(--amber-500); background: var(--amber-50); border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong>C2 · Cuidado no Desenvolvimento Infantil</strong>
+                <span class="badge badge-warning">Atenção Prioritária</span>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-700);">
+                Tipo: <strong>eSF</strong> | Peso Oficial: <strong>2</strong> | Conceito Atual: <strong>Suficiente</strong> | Tendência: <strong>estavel</strong>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-600); margin-top: 6px;">
+                Recomendação da APS: Realizar alinhamento com os profissionais da equipe, busca ativa nos microterritórios e qualificação dos registros no e-SUS APS.
+              </div>
+            </div>
+            
+            <div class="attention-card" style="margin-bottom: 12px; padding: 14px 18px; border-left: 4px solid var(--amber-500); background: var(--amber-50); border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong>C7 · Cuidado Integral à Saúde da Mulher</strong>
+                <span class="badge badge-warning">Atenção Prioritária</span>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-700);">
+                Tipo: <strong>eSF</strong> | Peso Oficial: <strong>2</strong> | Conceito Atual: <strong>Suficiente</strong> | Tendência: <strong>subiu</strong>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-600); margin-top: 6px;">
+                Recomendação da APS: Realizar alinhamento com os profissionais da equipe, busca ativa nos microterritórios e qualificação dos registros no e-SUS APS.
+              </div>
+            </div>
+            
+          </div>
+        
+      </section>
+
+      <!-- 4. Plano de Ações Vigente -->
+      <section class="report-section">
+        <h3 class="report-section-title">4. Plano de Ações de Melhoria Cadastrado</h3>
+        
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">ID</th>
+                <th>Ação Proposta</th>
+                <th style="width: 100px;">Equipe / Indicador</th>
+                <th style="width: 160px;">Responsável</th>
+                <th style="width: 90px;">Prazo</th>
+                <th style="width: 100px; text-align: center;">Situação</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td>#2</td>
+                <td>
+                  <strong>Oficina de pré-natal odontológico e busca ativa</strong>
+                  <div style="font-size: 11px; color: var(--slate-500); margin-top: 2px;">Alinhar protocolo com as equipes de saúde bucal e ACS para busca ativa e registro adequado no e-SUS APS.</div>
+                </td>
+                <td><span class="badge">eSB</span> B5</td>
+                <td>Coordenação de Saúde Bucal</td>
+                <td style="font-family: var(--font-mono); font-size: 12px;">2026-11-30</td>
+                <td style="text-align: center;">
+                  <span class="badge badge-blue">
+                    em_andamento
+                  </span>
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+        
+      </section>
+
+      <!-- 5. Trilha de Auditoria e Integridade SHA-256 -->
+      <section class="report-section">
+        <h3 class="report-section-title">5. Trilha de Auditoria & Hashes Criptográficos Oficiais</h3>
+        <p style="font-size: 12px; color: var(--slate-600); margin-bottom: 12px;">
+          Os dados deste relatório foram gerados exclusivamente a partir dos relatórios públicos do Ministério da Saúde, cujas assinaturas SHA-256 foram validadas no momento da captura:
+        </p>
+        <table class="data-table" style="font-size: 11px;">
+          <thead>
+            <tr>
+              <th>Relatório Oficial</th>
+              <th>Data/Hora Coleta (UTC)</th>
+              <th>Tamanho</th>
+              <th>Assinatura SHA-256</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td><strong>Relatorio_Publico_Classificacao_Geral_dos_Componentes.csv</strong></td>
+              <td style="font-family: var(--font-mono);">2026-10-14T03:09:40Z</td>
+              <td>2.3 KB</td>
+              <td style="font-family: var(--font-mono); font-size: 10px; word-break: break-all;">af85430d7c25acfc8728a0c5aae4f14516ee101c3b0b996f0a677b431fd2dd6f</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Relatorio_Publico_Classificacao_por_Dimensao_CVAT.csv</strong></td>
+              <td style="font-family: var(--font-mono);">2026-10-14T03:09:40Z</td>
+              <td>1.5 KB</td>
+              <td style="font-family: var(--font-mono); font-size: 10px; word-break: break-all;">dc0f78d2c2fcc4d419e55da055c31af038b0dee315bc642aea4f52cf15d0a52b</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Relatorio_Publico_Classificacao_Final_Qualidade.csv</strong></td>
+              <td style="font-family: var(--font-mono);">2026-10-14T03:09:40Z</td>
+              <td>2.2 KB</td>
+              <td style="font-family: var(--font-mono); font-size: 10px; word-break: break-all;">48642fb61c3848c8fff7feb4a08229c9df4308b350b46a66cdf6f352c063e63d</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Relatorio_Publico_Conceito_por_Indicador_Qualidade.csv</strong></td>
+              <td style="font-family: var(--font-mono);">2026-10-14T03:09:40Z</td>
+              <td>7.0 KB</td>
+              <td style="font-family: var(--font-mono); font-size: 10px; word-break: break-all;">be20732848043deec5956b8da9f61e40e5d5598cb72ee3c4cb615776bdb05740</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Termo de Encerramento e Assinaturas Formais -->
+      <div class="signatures-grid">
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <strong>Coordenação da Atenção Primária à Saúde</strong>
+          <div class="signature-title">Secretaria Municipal de Saúde de Pacujá/CE</div>
+        </div>
+        <div class="signature-block">
+          <div class="signature-line"></div>
+          <strong>Secretário(a) Municipal de Saúde</strong>
+          <div class="signature-title">Prefeitura Municipal de Pacujá/CE</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

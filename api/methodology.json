@@ -1,0 +1,167 @@
+{
+  "app_version": "1.0.0",
+  "metodologia": {
+    "documento": "Nota Técnica nº 8/2026-DEAPS/SAPS/MS",
+    "publicacao": "02/10/2026",
+    "revoga": "Nota Técnica nº 6/2025",
+    "equipes_elegiveis": [
+      "eSF",
+      "eAP",
+      "eSB",
+      "eMulti"
+    ],
+    "equipes_excluidas": [
+      "eAPP",
+      "eCR",
+      "eSFR"
+    ]
+  },
+  "indicadores": {
+    "eSF": {
+      "C1": {
+        "nome": "Mais acesso à APS",
+        "peso": 1,
+        "janela": "Últimos 30 dias",
+        "coTipo": 110
+      },
+      "C2": {
+        "nome": "Cuidado no desenvolvimento infantil",
+        "peso": 2,
+        "janela": "Últimos 24 meses",
+        "coTipo": 108
+      },
+      "C3": {
+        "nome": "Cuidado na gestação e puerpério",
+        "peso": 2,
+        "janela": "Últimos 12 meses",
+        "coTipo": 107
+      },
+      "C4": {
+        "nome": "Cuidado da pessoa com diabetes",
+        "peso": 1,
+        "janela": "Últimos 12 meses",
+        "coTipo": 105
+      },
+      "C5": {
+        "nome": "Cuidado da pessoa com hipertensão",
+        "peso": 1,
+        "janela": "Últimos 12 meses",
+        "coTipo": 104
+      },
+      "C6": {
+        "nome": "Cuidado da pessoa idosa",
+        "peso": 1,
+        "janela": "Últimos 12 meses",
+        "coTipo": 106
+      },
+      "C7": {
+        "nome": "Cuidado da mulher na prevenção do câncer",
+        "peso": 2,
+        "janela": "Últimos 60 meses",
+        "coTipo": 109
+      }
+    },
+    "eAP": {
+      "C1": {
+        "nome": "Mais acesso à APS",
+        "peso": 1,
+        "janela": "Últimos 30 dias",
+        "coTipo": 110
+      },
+      "C2": {
+        "nome": "Cuidado no desenvolvimento infantil",
+        "peso": 2,
+        "janela": "Últimos 24 meses",
+        "coTipo": 108
+      },
+      "C3": {
+        "nome": "Cuidado na gestação e puerpério",
+        "peso": 2,
+        "janela": "Últimos 12 meses",
+        "coTipo": 107
+      },
+      "C4": {
+        "nome": "Cuidado da pessoa com diabetes",
+        "peso": 1,
+        "janela": "Últimos 12 meses",
+        "coTipo": 105
+      },
+      "C5": {
+        "nome": "Cuidado da pessoa com hipertensão",
+        "peso": 1,
+        "janela": "Últimos 12 meses",
+        "coTipo": 104
+      },
+      "C6": {
+        "nome": "Cuidado da pessoa idosa",
+        "peso": 1,
+        "janela": "Últimos 12 meses",
+        "coTipo": 106
+      },
+      "C7": {
+        "nome": "Cuidado da mulher na prevenção do câncer",
+        "peso": 2,
+        "janela": "Últimos 60 meses",
+        "coTipo": 109
+      }
+    },
+    "eSB": {
+      "B1": {
+        "nome": "Primeira consulta odontológica programada",
+        "peso": 2,
+        "janela": "Últimos 30 dias",
+        "coTipo": 111
+      },
+      "B2": {
+        "nome": "Tratamento odontológico concluído",
+        "peso": 2,
+        "janela": "Últimos 30 dias",
+        "coTipo": 112
+      },
+      "B3": {
+        "nome": "Taxa de exodontias",
+        "peso": 2,
+        "janela": "Últimos 30 dias",
+        "coTipo": 113
+      },
+      "B4": {
+        "nome": "Escovação supervisionada em faixa etária escolar",
+        "peso": 1,
+        "janela": "Últimos 30 dias",
+        "coTipo": 114
+      },
+      "B5": {
+        "nome": "Procedimentos odontológicos individuais preventivos",
+        "peso": 2,
+        "janela": "Últimos 30 dias",
+        "coTipo": 115
+      },
+      "B6": {
+        "nome": "Tratamento restaurador atraumático",
+        "peso": 1,
+        "janela": "Últimos 30 dias",
+        "coTipo": 116
+      }
+    },
+    "eMulti": {
+      "M1": {
+        "nome": "Média de atendimentos da eMulti por pessoa",
+        "peso": 6,
+        "janela": "Últimos 4 meses",
+        "coTipo": 117
+      },
+      "M2": {
+        "nome": "Ações interprofissionais da eMulti",
+        "peso": 4,
+        "janela": "Últimos 4 meses",
+        "coTipo": 118
+      }
+    }
+  },
+  "limitacoes": [
+    "Os indicadores representam agregação pública de desempenho das equipes e não constituem prontuário ou histórico individual de pacientes.",
+    "Não é permitido inferir notas para tipos de equipe excluídos da NT 8/2026 (eAPP, eCR, eSFR).",
+    "Ausência de dados é preservada como ausência e nunca convertida em zero.",
+    "Resultados oficiais são de responsabilidade do Ministério da Saúde / Siaps."
+  ]
+}
