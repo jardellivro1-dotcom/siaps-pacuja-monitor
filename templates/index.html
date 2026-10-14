@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2141">
+  <title>Monitor APS Pacujá · Gestão e Resultados Siaps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Skip Link para Navegação por Teclado (WCAG 2.2 AA) -->
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+  <div class="app-shell">
+    <!-- Sidebar de Navegação -->
+    <aside class="sidebar">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <strong>APS PACUJÁ</strong>
+          <small>MONITOR GERENCIAL</small>
+        </div>
+      </div>
+
+      <div class="sidebar-label">NAVEGAÇÃO</div>
+      <nav aria-label="Navegação principal">
+        <a class="nav-item active" href="#visao-geral" id="nav-visao-geral">
+          <span class="nav-icon">◫</span>Visão Geral
+        </a>
+        <a class="nav-item" href="#evolucao" id="nav-evolucao">
+          <span class="nav-icon">📈</span>Evolução Temporal
+        </a>
+        <a class="nav-item" href="#indicadores" id="nav-indicadores">
+          <span class="nav-icon">📋</span>Indicadores NT 8/2026
+        </a>
+        <a class="nav-item" href="#equipes-sec" id="nav-equipes">
+          <span class="nav-icon">👥</span>Equipes Municipais
+        </a>
+        <a class="nav-item" href="#acoes" id="nav-acoes">
+          <span class="nav-icon">✓</span>Plano de Ações
+          <span class="badge-counter" id="actions-count-badge">0</span>
+        </a>
+        <a class="nav-item" href="#auditoria" id="nav-auditoria">
+          <span class="nav-icon">🛡️</span>Auditoria & CSVs
+        </a>
+      </nav>
+
+      <div class="sidebar-box">
+        <div class="sidebar-box-title">RECORTE TERRITORIAL</div>
+        <div class="sidebar-box-val">Pacujá · CE</div>
+        <div class="sidebar-box-sub">IBGE: 230990 · UF CE</div>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="source-dot pulse"></span>
+        <div>
+          <strong>Fonte Pública Oficial</strong>
+          <small>Siaps / Ministério da Saúde</small>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content" id="main-content" tabindex="-1">
+      <div id="visao-geral"></div>
+      <!-- Topbar Superior -->
+      <header class="topbar">
+        <div class="breadcrumb">
+          Atenção Primária <span>/</span> Monitoramento <span>/</span> Pacujá, CE
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-secondary btn-sm" id="btn-open-audit">
+            <span class="icon">🛡️</span> Auditoria & Hash SHA-256
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-sync">
+            <span class="icon" id="sync-icon">🔄</span> Sincronizar Siaps
+          </button>
+          <div class="avatar" title="Coordenação APS Pacujá">APS</div>
+        </div>
+      </header>
+
+      <!-- Cabeçalho da Página e Filtros -->
+      <section class="page-heading">
+        <div>
+          <div class="eyebrow">COFINANCIAMENTO DA ATENÇÃO PRIMÁRIA · NOTA TÉCNICA Nº 8/2026</div>
+          <h1>Monitor de Desempenho da Atenção Primária</h1>
+          <p>Acompanhamento executivo, cálculo reproduzível e auditoria pública dos Componentes II (Vínculo) e III (Qualidade) para Pacujá, Ceará.</p>
+        </div>
+
+        <div class="filter-cluster">
+          <div class="filter-item">
+            <label for="period-select">QUADRIMESTRE</label>
+            <select id="period-select" class="form-select">
+              <option value="">Carregando períodos...</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="team-filter">TIPO DE EQUIPE</label>
+            <select id="team-filter" class="form-select">
+              <option value="todas">Todas as Equipes (8)</option>
+              <option value="eSF">Saúde da Família (eSF)</option>
+              <option value="eSB">Saúde Bucal (eSB)</option>
+              <option value="eMulti">Multiprofissional (eMulti)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Faixa de Notificação / Status do Sistema -->
+      <section class="notice" id="system-notice" aria-live="polite">
+        <div class="notice-icon" id="notice-icon">i</div>
+        <div class="notice-body">
+          <strong id="status-title">Status da Base Oficial</strong>
+          <p id="status-message">Aguardando os relatórios públicos de Pacujá. Os cartões só serão preenchidos depois da validação do arquivo oficial.</p>
+        </div>
+        <div class="notice-badges">
+          <span class="badge badge-outline" id="badge-compliance">NT 8/2026 AUDITADA</span>
+          <span class="badge badge-success" id="badge-territory">PACUJÁ - CE</span>
+        </div>
+      </section>
+
+      <!-- KPI Cards do Município -->
+      <section class="kpi-grid" aria-label="Indicadores chave">
+        <article class="kpi-card" id="card-c2">
+          <div class="kpi-label">
+            <span>COMPONENTE II · VÍNCULO</span>
+            <span class="kpi-icon blue">↗</span>
+          </div>
+          <div class="kpi-title">Vínculo e Acompanhamento Territorial</div>
+          <div class="kpi-value" id="kpi-c2-val">—</div>
+          <div class="kpi-foot" id="kpi-c2-foot">
+            <span class="dot neutral"></span> Sem período validado
+          </div>
+        </article>
+
+        <article class="kpi-card" id="card-c3">
+          <div class="kpi-label">
+            <span>COMPONENTE III · QUALIDADE</span>
+            <span class="kpi-icon violet">✳</span>
+          </div>
+          <div class="kpi-title">Qualidade do Cuidado (Ponderado)</div>
+          <div class="kpi-value" id="kpi-c3-val">—</div>
+          <div class="kpi-foot" id="kpi-c3-foot">
+            <span class="dot neutral"></span> Sem período validado
+          </div>
+        </article>
+
+        <article class="kpi-card" id="card-teams">
+          <div class="kpi-label">
+            <span>EQUIPES MONITORADAS</span>
+            <span class="kpi-icon green">⌂</span>
+          </div>
+          <div class="kpi-title">Equipes Ativas no Município</div>
+          <div class="kpi-value" id="teams-count">—</div>
+          <div class="kpi-foot" id="teams-foot">
+            <span class="dot green"></span> 3 eSF · 3 eSB · 2 eMulti
+          </div>
+        </article>
+
+        <article class="kpi-card" id="card-sync">
+          <div class="kpi-label">
+            <span>AUDITORIA & INTEGRIDADE</span>
+            <span class="kpi-icon amber">🛡️</span>
+          </div>
+          <div class="kpi-title">Última Checagem Pública</div>
+          <div class="kpi-value date-value" id="last-check">—</div>
+          <div class="kpi-foot" id="last-check-foot">
+            <span class="dot green"></span> 4 relatórios com SHA-256
+          </div>
+        </article>
+      </section>
+
+      <!-- Seção de Evolução Temporal e Gráficos -->
+      <section class="content-grid" id="evolucao">
+        <article class="panel trend-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Evolução Temporal dos Componentes</h2>
+              <p>Histórico por quadrimestre publicado no catálogo oficial (Q2/25, Q3/25, Q1/26)</p>
+            </div>
+            <div class="chart-toggle">
+              <button class="toggle-btn active" data-chart="qualidade">Componente III</button>
+              <button class="toggle-btn" data-chart="cvat">Componente II</button>
+            </div>
+          </div>
+          <div class="chart-container" id="chart-wrapper">
+            <canvas id="evolutionChart"></canvas>
+            <div class="chart-empty" id="chart-empty">
+              <div class="chart-illustration">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <strong>O histórico aparecerá aqui</strong>
+              <p>Importe e valide os CSVs públicos para construir a série por quadrimestre.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel classification-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Distribuição por Faixa Oficial</h2>
+              <p>Classificação conforme limites da NT 8/2026</p>
+            </div>
+            <span class="legend-status" id="period-tag">—</span>
+          </div>
+
+          <div class="classification-bars" id="classification-bars">
+            <div class="class-row">
+              <div class="class-row-header">
+                <span class="class-dot excellent"></span>
+                <span class="class-name">Ótimo</span>
+                <span class="class-rule">> 7,5 (CIII) | > 8,5 (CII)</span>
+                <strong class="class-count" id="count-otimo">0</strong>
+              </div>
+              <div class="progress-bar"><div class="progress-fill excellent" id="fill-otimo" style="width: 0%"></div></div>
+            </div>
+
+            <div class="class-row">
+              <div class="class-row-header">
+                <span class="class-dot good"></span>
+                <span class="class-name">Bom</span>
+                <span class="class-rule">5 a 7,5 (CIII) | 7 a 8,5 (CII)</span>
+                <strong class="class-count" id="count-bom">0</strong>
+              </div>
+              <div class="progress-bar"><div class="progress-fill good" id="fill-bom" style="width: 0%"></div></div>
+            </div>
+
+            <div class="class-row">
+              <div class="class-row-header">
+                <span class="class-dot enough"></span>
+                <span class="class-name">Suficiente</span>
+                <span class="class-rule">2,5 a 5,0 (CIII) | 5 a 7,0 (CII)</span>
+                <strong class="class-count" id="count-suficiente">0</strong>
+              </div>
+              <div class="progress-bar"><div class="progress-fill enough" id="fill-suficiente" style="width: 0%"></div></div>
+            </div>
+
+            <div class="class-row">
+              <div class="class-row-header">
+                <span class="class-dot regular"></span>
+                <span class="class-name">Regular</span>
+                <span class="class-rule">&lt; 2,5 (CIII) | &lt; 5,0 (CII)</span>
+                <strong class="class-count" id="count-regular">0</strong>
+              </div>
+              <div class="progress-bar"><div class="progress-fill regular" id="fill-regular" style="width: 0%"></div></div>
+            </div>
+          </div>
+
+          <div class="panel-footnote">
+            Auditoria independente: nenhuma faixa ou classificação foi inferida sem CSV oficial correspondente.
+          </div>
+        </article>
+      </section>
+
+      <!-- Painel de Prioridades: Indicadores que Merecem Atenção -->
+      <section class="panel indicators-panel" id="prioridades">
+        <div class="panel-heading">
+          <div>
+            <div class="badge-alert-header">FOCO DA COORDENAÇÃO</div>
+            <h2>Indicadores que Merecem Atenção Gerencial</h2>
+            <p>Identificados por apresentarem equipes em faixas Regular/Suficiente ou tendência de queda.</p>
+          </div>
+          <button class="btn btn-outline btn-sm" id="btn-quick-action">
+            + Registrar Ação de Melhoria
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="table-attention">
+            <thead>
+              <tr>
+                <th>INDICADOR</th>
+                <th>EQUIPE</th>
+                <th>PESO NT 8/2026</th>
+                <th>DISTRIBUIÇÃO POR CONCEITO</th>
+                <th>DESEMPENHO PREDOMINANTE</th>
+                <th>TENDÊNCIA</th>
+                <th>AÇÃO GERENCIAL</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-attention">
+              <tr>
+                <td colspan="7" class="table-empty-cell">
+                  <div class="table-empty">
+                    <div class="empty-symbol">⌕</div>
+                    <strong>Aguardando os relatórios públicos de Pacujá</strong>
+                    <p>O painel não exibirá resultados de outros municípios ou de áreas restritas.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Todos os Indicadores do Componente III -->
+      <section class="panel indicators-panel" id="indicadores">
+        <div class="panel-heading">
+          <div>
+            <h2>Todos os Indicadores de Qualidade (Componente III)</h2>
+            <p>Detalhamento de conceitos, pesos e metas por tipo de equipe no quadrimestre selecionado.</p>
+          </div>
+          <div class="table-search-box">
+            <input type="text" id="indicator-search" placeholder="Filtrar por nome ou código..." class="search-input">
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="table-all-indicators">
+            <thead>
+              <tr>
+                <th>CÓDIGO</th>
+                <th>INDICADOR OFICIAL</th>
+                <th>TIPO EQUIPE</th>
+                <th>PESO</th>
+                <th>REGULAR</th>
+                <th>SUFICIENTE</th>
+                <th>BOM</th>
+                <th>ÓTIMO</th>
+                <th>SITUAÇÃO</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-all-indicators">
+              <!-- Preenchido dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção de Equipes Oficiais do Município -->
+      <section class="panel" id="equipes-sec">
+        <div class="panel-heading">
+          <div>
+            <h2>Equipes Homologadas no Município de Pacujá</h2>
+            <p>Cadastro oficial obtido via Ministério da Saúde (CNES / Siaps)</p>
+          </div>
+          <span class="badge badge-info" id="badge-total-teams">8 equipes ativas</span>
+        </div>
+
+        <div class="teams-grid" id="teams-grid-container">
+          <!-- Cards de equipes preenchidos via JS -->
+        </div>
+      </section>
+
+      <!-- Plano de Ações de Melhoria e Metodologia Oficial -->
+      <section class="bottom-grid" id="acoes">
+        <!-- Ações de Melhoria -->
+        <article class="panel action-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Plano de Ações de Melhoria da Gestão</h2>
+              <p>Ações operacionais da coordenação da APS para qualificação dos indicadores</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-add-action">+ Nova Ação</button>
+          </div>
+
+          <div class="actions-list" id="actions-list">
+            <div class="action-empty" id="actions-empty-state">
+              Nenhuma ação cadastrada ainda. Clique em "+ Nova Ação" para registrar plano, responsável e prazo.
+            </div>
+          </div>
+        </article>
+
+        <!-- Card de Metodologia e Integridade -->
+        <article class="method-card">
+          <div class="method-top">
+            <span class="method-icon">✓</span>
+            <span>METODOLOGIA OFICIAL</span>
+            <span class="method-version">NT 8/2026</span>
+          </div>
+          <h2>Cálculo Quadrimestral Oficial da APS</h2>
+          <p>
+            O painel segue rigorosamente a Nota Técnica nº 8/2026-DEAPS/SAPS/MS para eSF, eAP, eSB e eMulti:
+          </p>
+          <ul class="method-list">
+            <li><strong>Componente II (CVAT):</strong> Médias mensais de Cadastro (janela 24 meses) e Acompanhamento (janela 12 meses).</li>
+            <li><strong>Componente III (Qualidade):</strong> Média ponderada por pesos oficiais (eSF soma 10 pts, eSB 10 pts, eMulti 10 pts).</li>
+            <li><strong>Conceitos:</strong> Regular (0,25), Suficiente (0,50), Bom (0,75) e Ótimo (1,00).</li>
+            <li><strong>Exclusão:</strong> eAPP, eCR e eSFR possuem metodologias separadas e não usam a NT 8/2026.</li>
+          </ul>
+          <div class="method-actions">
+            <a href="https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/notas-tecnicas/2026/nota-tecnica-no-8-2026-deaps-saps-ms.pdf/view" target="_blank" rel="noopener noreferrer">
+              Consultar Nota Técnica Oficial <span>↗</span>
+            </a>
+          </div>
+        </article>
+      </section>
+
+      <!-- Rodapé Institucional -->
+      <footer class="page-footer">
+        <div>
+          <strong>Monitor APS Pacujá · Ceará</strong>
+          <small>Desenvolvido com integridade e transparência para a gestão em saúde pública.</small>
+        </div>
+        <div class="footer-meta">
+          <span>Fonte: Ministério da Saúde · Siaps Público</span>
+          <span id="report-count">4 arquivos validados</span>
+          <span class="footer-tag">RECORTE EXCLUSIVO: CE / PACUJÁ (230990)</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Modal de Criação de Ação de Melhoria -->
+  <div class="modal-backdrop" id="action-modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h3 id="modal-title">Nova Ação de Melhoria da APS</h3>
+        <button class="modal-close" id="modal-close-btn" aria-label="Fechar">&times;</button>
+      </div>
+      <form id="form-action">
+        <div class="form-group">
+          <label for="action-title">Título da Ação *</label>
+          <input type="text" id="action-title" class="form-control" required placeholder="Ex: Intensificar busca ativa vacinal na Zona Rural">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="action-team-type">Tipo de Equipe</label>
+            <select id="action-team-type" class="form-control">
+              <option value="Geral">Todas / Geral</option>
+              <option value="eSF">Saúde da Família (eSF)</option>
+              <option value="eSB">Saúde Bucal (eSB)</option>
+              <option value="eMulti">Multiprofissional (eMulti)</option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="action-indicator">Indicador Relacionado</label>
+            <select id="action-indicator" class="form-control">
+              <option value="">Geral / Nenhum específico</option>
+              <option value="C1">C1 - Mais acesso à APS</option>
+              <option value="C2">C2 - Cuidado no desenvolvimento infantil</option>
+              <option value="C3">C3 - Cuidado na gestação e puerpério</option>
+              <option value="C4">C4 - Cuidado da pessoa com diabetes</option>
+              <option value="C5">C5 - Cuidado da pessoa com hipertensão</option>
+              <option value="C6">C6 - Cuidado da pessoa idosa</option>
+              <option value="C7">C7 - Prevenção do câncer de colo de útero</option>
+              <option value="B1">B1 - Primeira consulta odontológica programada</option>
+              <option value="B2">B2 - Tratamento odontológico concluído</option>
+              <option value="B5">B5 - Procedimentos odontológicos preventivos</option>
+              <option value="M1">M1 - Média de atendimentos da eMulti por pessoa</option>
+              <option value="M2">M2 - Ações interprofissionais da eMulti</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="action-responsible">Responsável *</label>
+            <input type="text" id="action-responsible" class="form-control" required placeholder="Ex: Coordenação de Enfermagem">
+          </div>
+          <div class="form-group col">
+            <label for="action-deadline">Prazo de Conclusão *</label>
+            <input type="date" id="action-deadline" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="action-description">Detalhamento da Ação e Meta</label>
+          <textarea id="action-description" class="form-control" rows="3" placeholder="Descreva as etapas, reuniões ou buscas ativas planejadas para atingir o conceito Ótimo."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-action">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Ação</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal / Drawer de Auditoria e CSVs Oficiais -->
+  <div class="modal-backdrop" id="audit-modal" aria-hidden="true">
+    <div class="modal-content modal-lg" role="dialog" aria-labelledby="audit-modal-title">
+      <div class="modal-header">
+        <div>
+          <h3 id="audit-modal-title">Trilha de Auditoria & Arquivos CSV Originais</h3>
+          <p class="modal-subtitle">Conformidade com a Regra 5 e 6 do AGENTS.md: Registro de URL pública, data, período e SHA-256.</p>
+        </div>
+        <button class="modal-close" id="audit-modal-close" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="audit-body">
+        <div class="audit-summary-bar">
+          <div><strong>Território:</strong> Pacujá, CE (230990)</div>
+          <div><strong>Domínio Oficial:</strong> apisiaps.saude.gov.br</div>
+          <div><strong>Acesso Restrito:</strong> Nunca utilizado (Regra 2)</div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="table-raw-files">
+            <thead>
+              <tr>
+                <th>ARQUIVO CSV ORIGINAL</th>
+                <th>COMPONENTE</th>
+                <th>TAMANHO</th>
+                <th>HASH SHA-256</th>
+                <th>CAPTURA</th>
+                <th>DOWNLOAD</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-raw-files">
+              <!-- Preenchido dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-close-audit">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Script da Aplicação -->
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
