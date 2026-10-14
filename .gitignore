@@ -9,4 +9,5 @@ data/backups/
 *.sha256
 *.sqlite3
 *.db
+dist/
 

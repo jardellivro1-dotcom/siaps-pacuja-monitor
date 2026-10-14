@@ -1,6 +1,7 @@
 # Monitor APS Pacujá · Gestão e Resultados Siaps
 
 [![CI](https://github.com/jardellivro1-dotcom/siaps-pacuja-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/jardellivro1-dotcom/siaps-pacuja-monitor/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/jardellivro1-dotcom/siaps-pacuja-monitor/actions/workflows/pages.yml/badge.svg)](https://jardellivro1-dotcom.github.io/siaps-pacuja-monitor/)
 [![Rotina Mensal](https://github.com/jardellivro1-dotcom/siaps-pacuja-monitor/actions/workflows/monthly_update.yml/badge.svg)](https://github.com/jardellivro1-dotcom/siaps-pacuja-monitor/actions/workflows/monthly_update.yml)
 [![Metodologia](https://img.shields.io/badge/Metodologia-Nota%20T%C3%A9cnica%20n%C2%BA%208%2F2026-blue)](docs/metodologia.md)
 [![Segurança](https://img.shields.io/badge/Seguran%C3%A7a-OWASP%20ASVS%20v4.0.3-green)](docs/seguranca_asvs.md)
@@ -14,8 +15,9 @@ Aplicação web institucional e painel gerencial de alto desempenho para monitor
 
 O aplicativo foi configurado para implantação gratuita e contínua em múltiplos provedores de nuvem:
 
-| Plataforma | Tipo de Hospedagem | Deploy em 1-Clique |
+| Plataforma | Tipo de Hospedagem | Acesso / Deploy |
 |---|---|---|
+| **GitHub Pages** | Portal Público Estático com CDN Global e SSL Grátis | [🔗 Acessar GitHub Pages](https://jardellivro1-dotcom.github.io/siaps-pacuja-monitor/) |
 | **Render** | Serviço Web Python / Gunicorn com SSL Grátis | [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/jardellivro1-dotcom/siaps-pacuja-monitor) |
 | **Vercel** | Serverless Python com CDN global e zero latência | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/jardellivro1-dotcom/siaps-pacuja-monitor) |
 | **Docker / VPS** | Container universal (`docker-compose up -d`) | Veja instruções abaixo |

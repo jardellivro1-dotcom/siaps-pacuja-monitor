@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/'/g, '&#39;');
   }
 
+  const IS_STATIC_HOST = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+  const ACTIONS_STORAGE_KEY = 'siaps_actions_local_pacuja';
 
   // DOM Elements
   const periodSelect = document.getElementById('period-select');
@@ -157,7 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadStatus() {
     try {
-      const res = await fetch('/api/status');
+      const url = IS_STATIC_HOST ? './api/status.json' : '/api/status';
+      const res = await fetch(url);
       const data = await res.json();
 
       statusMessage.textContent = data.message;
@@ -181,14 +184,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const period = periodSelect.value;
     const team = teamFilter.value;
 
-    let url = '/api/dashboard';
-    const params = new URLSearchParams();
-    if (period) params.append('period', period);
-    if (team) params.append('team_type', team);
-    if (params.toString()) url += `?${params.toString()}`;
+    let url;
+    if (IS_STATIC_HOST) {
+      const pKey = period || 'default';
+      const tKey = team || 'todas';
+      url = `./api/dashboard_${pKey}_${tKey}.json`;
+    } else {
+      url = '/api/dashboard';
+      const params = new URLSearchParams();
+      if (period) params.append('period', period);
+      if (team) params.append('team_type', team);
+      if (params.toString()) url += `?${params.toString()}`;
+    }
 
     try {
-      const res = await fetch(url);
+      let res = await fetch(url);
+      if (!res.ok && IS_STATIC_HOST) {
+        res = await fetch('./api/dashboard.json');
+      }
       const data = await res.json();
       cachedDashboardData = data;
 
@@ -457,6 +470,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadActions() {
+    if (IS_STATIC_HOST) {
+      let localActions = [];
+      try {
+        const saved = localStorage.getItem(ACTIONS_STORAGE_KEY);
+        if (saved) {
+          localActions = JSON.parse(saved);
+        } else {
+          const res = await fetch('./api/actions.json');
+          if (res.ok) {
+            const data = await res.json();
+            localActions = data.actions || [];
+            localStorage.setItem(ACTIONS_STORAGE_KEY, JSON.stringify(localActions));
+          }
+        }
+      } catch (e) {
+        console.warn('Erro ao ler ações em modo estático:', e);
+      }
+      renderActions(localActions);
+      return;
+    }
+
     try {
       const res = await fetch('/api/actions');
       const data = await res.json();
@@ -515,6 +549,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const curr = e.currentTarget.dataset.current;
         const nextStatus = curr === 'pendente' ? 'em_andamento' : (curr === 'em_andamento' ? 'concluido' : 'pendente');
 
+        if (IS_STATIC_HOST) {
+          try {
+            const list = JSON.parse(localStorage.getItem(ACTIONS_STORAGE_KEY) || '[]');
+            const item = list.find(x => String(x.id) === String(id));
+            if (item) item.status = nextStatus;
+            localStorage.setItem(ACTIONS_STORAGE_KEY, JSON.stringify(list));
+            showToast('Situação da ação atualizada no navegador!', 'success');
+            loadActions();
+            return;
+          } catch (e) {}
+        }
+
         await fetch(`/api/actions/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -530,6 +576,18 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', async (e) => {
         if (!confirm('Deseja realmente remover esta ação?')) return;
         const id = e.currentTarget.dataset.id;
+
+        if (IS_STATIC_HOST) {
+          try {
+            let list = JSON.parse(localStorage.getItem(ACTIONS_STORAGE_KEY) || '[]');
+            list = list.filter(x => String(x.id) !== String(id));
+            localStorage.setItem(ACTIONS_STORAGE_KEY, JSON.stringify(list));
+            showToast('Ação removida do armazenamento local.', 'info');
+            loadActions();
+            return;
+          } catch (e) {}
+        }
+
         await fetch(`/api/actions/${id}`, { method: 'DELETE' });
         showToast('Ação removida.', 'info');
         loadActions();
@@ -548,6 +606,21 @@ document.addEventListener('DOMContentLoaded', () => {
       description: document.getElementById('action-description').value,
       status: 'pendente'
     };
+
+    if (IS_STATIC_HOST) {
+      try {
+        const list = JSON.parse(localStorage.getItem(ACTIONS_STORAGE_KEY) || '[]');
+        payload.id = Date.now();
+        payload.created_at = new Date().toISOString();
+        list.unshift(payload);
+        localStorage.setItem(ACTIONS_STORAGE_KEY, JSON.stringify(list));
+        actionModal.classList.remove('active');
+        showToast('Ação registrada no navegador (modo estático)!', 'success');
+        actionForm.reset();
+        loadActions();
+        return;
+      } catch (e) {}
+    }
 
     try {
       const res = await fetch('/api/actions', {
@@ -573,7 +646,8 @@ document.addEventListener('DOMContentLoaded', () => {
     auditModal.classList.add('active');
 
     try {
-      const res = await fetch('/api/raw-files');
+      const url = IS_STATIC_HOST ? './api/raw-files.json' : '/api/raw-files';
+      const res = await fetch(url);
       const data = await res.json();
       tbodyRawFiles.innerHTML = '';
 
@@ -584,6 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       data.files.forEach(f => {
         const tr = document.createElement('tr');
+        const dlUrl = IS_STATIC_HOST ? `./data/raw/${f.filename}` : `/api/raw-files/${f.filename}/download`;
         tr.innerHTML = `
           <td><strong>${f.filename}</strong></td>
           <td>${f.component}</td>
@@ -591,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="hash-cell">${f.sha256_hash}</td>
           <td>${f.fetched_at ? f.fetched_at.slice(0, 16).replace('T', ' ') : '—'}</td>
           <td>
-            <a href="/api/raw-files/${f.filename}/download" class="btn btn-secondary btn-sm">
+            <a href="${dlUrl}" download="${f.filename}" class="btn btn-secondary btn-sm">
               Baixar CSV
             </a>
           </td>
@@ -605,6 +680,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function triggerSync() {
+    if (IS_STATIC_HOST) {
+      showToast('No GitHub Pages os relatórios são auditados e atualizados pelo GitHub Actions no dia 5 às 06:00 UTC.', 'info');
+      return;
+    }
+
     syncIcon.classList.add('spinning');
     btnSync.disabled = true;
     showToast('Consultando catálogo público oficial do Siaps...', 'info');
@@ -636,7 +716,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadMonthlyTracking() {
     try {
-      const res = await fetch('/api/monthly-tracking');
+      const url = IS_STATIC_HOST ? './api/monthly-tracking.json' : '/api/monthly-tracking';
+      const res = await fetch(url);
       if (!res.ok) return;
       const data = await res.json();
 
@@ -681,6 +762,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSyncMonthly = document.getElementById('btn-sync-monthly');
   if (btnSyncMonthly) {
     btnSyncMonthly.addEventListener('click', async () => {
+      if (IS_STATIC_HOST) {
+        showToast('No GitHub Pages a rotina mensal é disparada pelo GitHub Actions (veja aba Actions do repositório).', 'info');
+        return;
+      }
       btnSyncMonthly.disabled = true;
       showToast('Disparando verificação mensal do Siaps...', 'info');
       try {
