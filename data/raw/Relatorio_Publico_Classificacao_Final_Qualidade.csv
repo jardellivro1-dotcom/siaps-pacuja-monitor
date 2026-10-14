@@ -1,0 +1,36 @@
+Ministério da Saúde - MS
+Secretaria de Atenção Primária à Saúde - Saps
+Sistema de Informação para a Atenção Primária à Saúde – Siaps
+Dado gerado em: 14 de outubro de 2026 - 00:08h
+Relatorio Publico - Classificacao Final Qualidade
+Dado Preliminar
+
+Dados sociodemográficos:
+UF: CE
+Município: 230990 / PACUJÁ
+
+Filtro:
+Quadrimestre selecionada: 2025Q1, 2025Q2, 2025Q3, 2026Q1
+
+Quadrimestre/Ano;UF;Código IBGE;Nome Município;Sigla de Tipo de Equipe;Classificação Final OTIMO (>7.5);Percentual Classificação Final OTIMO;Classificação Final BOM;Percentual Classificação Final BOM;Classificação Final SUFICIENTE;Percentual da Classificação Final SUFICIENTE;Total de equipe - REGULAR;Percentual Classificação Final REGULAR;Total de equipe Válidas para o componente
+"2025Q1	";"CE	";"230990	";"PACUJÁ	";"eMulti	";"1	";"100.0	";"0	";"0.0	";"0	";"0.0	";"0	";"0.0	";"1	"
+"2025Q1	";"CE	";"230990	";"PACUJÁ	";"eSB	";"0	";"0.0	";"3	";"100.0	";"0	";"0.0	";"0	";"0.0	";"3	"
+"2025Q1	";"CE	";"230990	";"PACUJÁ	";"eSF	";"0	";"0.0	";"3	";"100.0	";"0	";"0.0	";"0	";"0.0	";"3	"
+"2025Q2	";"CE	";"230990	";"PACUJÁ	";"eMulti	";"1	";"100.0	";"0	";"0.0	";"0	";"0.0	";"0	";"0.0	";"1	"
+"2025Q2	";"CE	";"230990	";"PACUJÁ	";"eSB	";"0	";"0.0	";"3	";"100.0	";"0	";"0.0	";"0	";"0.0	";"3	"
+"2025Q2	";"CE	";"230990	";"PACUJÁ	";"eSF	";"0	";"0.0	";"3	";"100.0	";"0	";"0.0	";"0	";"0.0	";"3	"
+"2025Q3	";"CE	";"230990	";"PACUJÁ	";"eMulti	";"1	";"50.0	";"1	";"50.0	";"0	";"0.0	";"0	";"0.0	";"2	"
+"2025Q3	";"CE	";"230990	";"PACUJÁ	";"eSB	";"1	";"33.33	";"2	";"66.67	";"0	";"0.0	";"0	";"0.0	";"3	"
+"2025Q3	";"CE	";"230990	";"PACUJÁ	";"eSF	";"0	";"0.0	";"3	";"100.0	";"0	";"0.0	";"0	";"0.0	";"3	"
+"2026Q1	";"CE	";"230990	";"PACUJÁ	";"eMulti	";"1	";"50.0	";"1	";"50.0	";"0	";"0.0	";"0	";"0.0	";"2	"
+"2026Q1	";"CE	";"230990	";"PACUJÁ	";"eSB	";"3	";"100.0	";"0	";"0.0	";"0	";"0.0	";"0	";"0.0	";"3	"
+"2026Q1	";"CE	";"230990	";"PACUJÁ	";"eSF	";"1	";"33.33	";"2	";"66.67	";"0	";"0.0	";"0	";"0.0	";"3	"
+
+Fonte: Sistema de Informação para a Atenção Primária à Saúde - SIAPS
+
+
+"Legenda da Classificação da Nota Final do Componente III	"
+"Regular	";"> 2,5	"
+"Suficiente	";"2.6 a 4.9	"
+"Bom	";"5 a 7.5	"
+"Ótimo	";"> 7.5	"

@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 .env
 instance/
-data/raw/**/*.csv
 data/processed/*.json
 *.sqlite3
 *.db
+

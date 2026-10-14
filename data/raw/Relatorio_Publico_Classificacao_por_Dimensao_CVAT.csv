@@ -1,0 +1,32 @@
+Ministério da Saúde - MS
+Secretaria de Atenção Primária à Saúde - Saps
+Sistema de Informação para a Atenção Primária à Saúde – Siaps
+Dado gerado em: 14 de outubro de 2026 - 00:08h
+Relatorio Publico - Classificacao por Dimensao CVAT
+Dado Preliminar
+
+Dados sociodemográficos:
+UF: CE
+Município: 230990 / PACUJÁ
+
+Filtro:
+Quadrimestre selecionada: 2025Q1, 2025Q2, 2025Q3, 2026Q1
+
+Quadrimestre/Ano;UF;Código IBGE;Município;Tipo de Equipe;Dimensão por tipo de equipe;Total de equipe - REGULAR;Total de equipe - SUFICIENTE;Total de equipe  - BOM;Total de equipe   - ÓTIMO
+"2025Q3	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Cadastro	";"0	";"0	";"0	";"3	"
+"2025Q2	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Cadastro	";"0	";"0	";"0	";"3	"
+"2026Q1	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Cadastro	";"0	";"0	";"0	";"3	"
+"2025Q1	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Cadastro	";"0	";"0	";"1	";"2	"
+"2026Q1	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Acompanhamento	";"0	";"0	";"0	";"3	"
+"2025Q3	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Acompanhamento	";"0	";"0	";"0	";"3	"
+"2025Q1	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Acompanhamento	";"0	";"0	";"2	";"1	"
+"2025Q2	";"CE	";"230990	";"PACUJÁ	";"eSF	";"CVAT - Dimensão Acompanhamento	";"0	";"0	";"0	";"3	"
+
+Fonte: Sistema de Informação para a Atenção Primária à Saúde - SIAPS
+
+
+"Legenda do Conceito Obtido do Indicador	"
+"Regular	";"0,25	"
+"Suficiente	";"0,50	"
+"Bom	";"0,75	"
+"Ótimo	";"1	"

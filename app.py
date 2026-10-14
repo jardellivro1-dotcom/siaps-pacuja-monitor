@@ -37,17 +37,54 @@ APP_VERSION = "1.0.0"
 
 
 def create_app(test_config: dict | None = None) -> Flask:
-    app = Flask(__name__)
+    # Suporte a ambientes serverless (Vercel) com sistema de arquivos somente-leitura
+    is_vercel = bool(os.environ.get("VERCEL"))
+
+    if is_vercel:
+        default_db = Path("/tmp/siaps_monitor.db")
+        default_raw = Path("/tmp/raw")
+        default_raw.mkdir(parents=True, exist_ok=True)
+        # Copia relatórios originais empacotados para /tmp/raw
+        if RAW_DATA.exists():
+            for src_csv in RAW_DATA.glob("*.csv"):
+                dest_csv = default_raw / src_csv.name
+                if not dest_csv.exists():
+                    try:
+                        import shutil
+                        shutil.copy2(src_csv, dest_csv)
+                    except Exception:
+                        pass
+    else:
+        default_db = DB_PATH
+        default_raw = RAW_DATA
+
+    app = Flask(
+        __name__,
+        template_folder=str(ROOT / "templates"),
+        static_folder=str(ROOT / "static"),
+    )
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SIAPS_SECRET_KEY", "dev-only-change-me"),
-        RAW_DATA_DIR=RAW_DATA,
-        DB_PATH=DB_PATH,
+        RAW_DATA_DIR=default_raw,
+        DB_PATH=default_db,
     )
     if test_config:
         app.config.update(test_config)
 
-    # Garante inicialização do banco de dados
-    init_db(Path(app.config["DB_PATH"]))
+    # Garante inicialização do esquema do banco de dados
+    target_db = Path(app.config["DB_PATH"])
+    init_db(target_db)
+
+    # Auto-seed: em ambiente novo com banco vazio, carrega os dados oficiais automaticamente
+    if not test_config:
+        try:
+            conn = get_connection(target_db)
+            teams_count = conn.execute("SELECT COUNT(*) AS c FROM teams").fetchone()["c"]
+            conn.close()
+            if teams_count == 0:
+                sync_siaps_data(db_path=target_db, raw_dir=Path(app.config["RAW_DATA_DIR"]), trigger_type="startup_seed")
+        except Exception:
+            pass
 
     @app.after_request
     def security_headers(response):
