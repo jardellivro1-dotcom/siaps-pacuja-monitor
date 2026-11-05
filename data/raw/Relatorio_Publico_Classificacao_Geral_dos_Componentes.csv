@@ -1,7 +1,7 @@
 Ministério da Saúde - MS
 Secretaria de Atenção Primária à Saúde - Saps
 Sistema de Informação para a Atenção Primária à Saúde – Siaps
-Dado gerado em: 14 de outubro de 2026 - 00:08h
+Dado gerado em: 05 de novembro de 2026 - 14:26h
 Relatorio Publico - Classificacao Geral dos Componentes
 Dado Preliminar
 
@@ -10,7 +10,7 @@ UF: CE
 Município: 230990 / PACUJÁ
 
 Filtro:
-Quadrimestre selecionada: 2025Q1, 2025Q2, 2025Q3, 2026Q1
+Quadrimestre selecionada: 2025Q1, 2025Q2, 2025Q3, 2026Q1, 2026Q2
 
 Quadrimestre/Ano;Estado;Código IBGE;Município;Classificação Final;Vínculo e Acompanhamento Territorial -  Nº eSF;Vínculo e Acompanhamento Territorial -  Nº eAP;Qualidade -  Nº eSF;Qualidade -  Nº eAP;Qualidade -  Nº esB;Qualidade -  Nº eMulti
 "2025Q1	";"CE	";"230990	";"PACUJÁ	";"Ótimo	";"3	";"0	";"0	";"0	";"0	";"1	"
@@ -29,6 +29,10 @@ Quadrimestre/Ano;Estado;Código IBGE;Município;Classificação Final;Vínculo e
 "2026Q1	";"CE	";"230990	";"PACUJÁ	";"Bom	";"0	";"0	";"2	";"0	";"0	";"1	"
 "2026Q1	";"CE	";"230990	";"PACUJÁ	";"Suficiente	";"0	";"0	";"0	";"0	";"0	";"0	"
 "2026Q1	";"CE	";"230990	";"PACUJÁ	";"Regular	";"0	";"0	";"0	";"0	";"0	";"0	"
+"2026Q2	";"CE	";"230990	";"PACUJÁ	";"Ótimo	";"3	";"0	";"2	";"0	";"1	";"1	"
+"2026Q2	";"CE	";"230990	";"PACUJÁ	";"Bom	";"0	";"0	";"1	";"0	";"2	";"1	"
+"2026Q2	";"CE	";"230990	";"PACUJÁ	";"Suficiente	";"0	";"0	";"0	";"0	";"0	";"0	"
+"2026Q2	";"CE	";"230990	";"PACUJÁ	";"Regular	";"0	";"0	";"0	";"0	";"0	";"0	"
 
 Fonte: Sistema de Informação para a Atenção Primária à Saúde - SIAPS
 
